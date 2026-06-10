@@ -1,0 +1,17 @@
+# Node and Vite
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Native wrapper outputs, generated later by Capacitor
+android/
+ios/
+
+# IDE and OS files
+.DS_Store
+.idea/
+.vscode/

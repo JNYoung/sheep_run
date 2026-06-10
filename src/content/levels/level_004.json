@@ -1,0 +1,14 @@
+{
+  "id": "level_004",
+  "titleKey": "level.004.title",
+  "objectiveKey": "objective.default",
+  "width": 6,
+  "height": 5,
+  "sheep": { "x": 1, "y": 1, "facing": "south" },
+  "barn": { "x": 1, "y": 4, "entryDirection": "north" },
+  "obstacles": [
+    { "x": 3, "y": 1, "kind": "fence" },
+    { "x": 4, "y": 3, "kind": "hay" },
+    { "x": 0, "y": 4, "kind": "flower" }
+  ]
+}
