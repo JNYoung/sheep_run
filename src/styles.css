@@ -1,3 +1,18 @@
+:root {
+  --cream: #fff4d7;
+  --cream-2: #ffe7b3;
+  --ink: #5b3a24;
+  --green: #44ad57;
+  --blue: #49a4ff;
+  --red: #ff6b5f;
+  --gold: #f7c751;
+  --shadow: rgba(80, 51, 24, 0.24);
+  --asset-ui-globe: url("/assets/v1/ui/secondary_language_button.png");
+  --asset-ui-play: url("/assets/v1/ui/primary_play_button.png");
+  --asset-ui-restart: url("/assets/v1/ui/restart_icon_button.png");
+  --asset-ui-sound: url("/assets/v1/ui/sound_icon_button.png");
+}
+
 * {
   box-sizing: border-box;
 }
@@ -9,9 +24,9 @@ body,
   height: 100%;
   margin: 0;
   overflow: hidden;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #79c96a;
-  color: #172015;
+  font-family: ui-rounded, "Avenir Next", "Trebuchet MS", ui-sans-serif, system-ui, sans-serif;
+  background: #78cf68;
+  color: var(--ink);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -19,7 +34,8 @@ button {
   border: 0;
   border-radius: 8px;
   font: inherit;
-  font-weight: 700;
+  font-weight: 900;
+  letter-spacing: 0;
   cursor: pointer;
   touch-action: manipulation;
 }
@@ -42,67 +58,127 @@ button {
 
 .top-bar {
   position: absolute;
-  top: max(14px, env(safe-area-inset-top));
-  left: max(14px, env(safe-area-inset-left));
-  right: max(14px, env(safe-area-inset-right));
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  right: max(12px, env(safe-area-inset-right));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
   pointer-events: none;
 }
 
+.objective,
+.panel,
+.status-chip {
+  border: 4px solid #a76931;
+  outline: 3px solid rgba(255, 239, 181, 0.78);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 235, 184, 0.8)),
+    var(--cream);
+  box-shadow:
+    inset 0 0 0 4px rgba(255, 255, 255, 0.52),
+    inset 0 -7px rgba(139, 82, 34, 0.1),
+    0 10px 0 rgba(104, 62, 28, 0.2),
+    0 18px 34px var(--shadow);
+}
+
 .objective {
-  max-width: min(580px, 62vw);
-  padding: 10px 13px;
+  max-width: min(530px, 66vw);
+  padding: 11px 16px 11px 74px;
   border-radius: 8px;
-  background: rgba(255, 249, 223, 0.88);
-  box-shadow: 0 10px 26px rgba(35, 60, 28, 0.14);
-  color: #213018;
+  color: var(--ink);
   pointer-events: auto;
+  position: relative;
+  min-height: 68px;
+}
+
+.objective::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  transform: translateY(-50%);
+  border-radius: 8px;
+  background:
+    #78bd35 url("/assets/v1/sprites/sheep/sheep_idle_south.png") center 84% / 46px auto no-repeat;
+  box-shadow: inset 0 -4px rgba(63, 92, 25, 0.22), 0 2px 0 rgba(255, 255, 255, 0.55);
 }
 
 .objective strong {
   display: block;
-  margin-bottom: 2px;
-  font-size: clamp(15px, 2.4vw, 20px);
+  margin-bottom: 1px;
+  font-size: clamp(15px, 2.2vw, 21px);
+  line-height: 1.08;
 }
 
 .objective span {
   display: block;
-  font-size: clamp(12px, 1.9vw, 15px);
-  line-height: 1.32;
+  font-size: clamp(12px, 1.8vw, 15px);
+  line-height: 1.25;
 }
 
 .hud-actions {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   pointer-events: auto;
 }
 
 .icon-button,
 .text-button {
   min-width: 44px;
-  min-height: 40px;
-  padding: 0 12px;
-  background: rgba(34, 52, 38, 0.82);
-  color: #fffaf0;
-  box-shadow: 0 8px 20px rgba(23, 40, 19, 0.2);
+  min-height: 42px;
+  padding: 0 13px;
+  color: #fffdf4;
+  background: linear-gradient(180deg, #5bd06f, #278d3d);
+  border: 3px solid rgba(255, 239, 181, 0.92);
+  box-shadow: inset 0 -5px rgba(70, 45, 28, 0.18), 0 8px 0 rgba(80, 51, 24, 0.16);
+  text-shadow: 0 2px 0 rgba(59, 39, 20, 0.28);
+}
+
+.icon-button {
+  width: 54px;
+  min-width: 54px;
+  height: 54px;
+  min-height: 54px;
+  padding: 0;
+  color: transparent;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 0;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.icon-button[data-action="restart"] {
+  background-image: var(--asset-ui-restart);
+}
+
+.icon-button[data-action="language"] {
+  background-image: var(--asset-ui-globe);
+}
+
+.icon-button[data-action="sound"] {
+  background-image: var(--asset-ui-sound);
 }
 
 .text-button.primary {
-  background: #2f8f41;
+  background: linear-gradient(180deg, #4fc865, #269a44);
 }
 
 .text-button.warn {
-  background: #ca4a38;
+  background: linear-gradient(180deg, #ff8275, #e35046);
 }
 
 .bottom-status {
   position: absolute;
   left: max(16px, env(safe-area-inset-left));
   right: max(16px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
+  bottom: max(14px, env(safe-area-inset-bottom));
   display: flex;
   justify-content: center;
   pointer-events: none;
@@ -110,12 +186,12 @@ button {
 
 .status-chip {
   max-width: min(620px, 92vw);
-  padding: 9px 14px;
+  min-height: 46px;
+  padding: 10px 18px;
   border-radius: 8px;
-  background: rgba(22, 33, 24, 0.78);
-  color: #fff8e6;
+  color: var(--ink);
   font-size: clamp(13px, 2vw, 16px);
-  line-height: 1.3;
+  line-height: 1.28;
   text-align: center;
 }
 
@@ -124,8 +200,8 @@ button {
   inset: 0;
   display: grid;
   place-items: center;
-  padding: max(22px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(22px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
-  background: linear-gradient(180deg, rgba(64, 139, 65, 0.18), rgba(26, 54, 34, 0.26));
+  padding: max(18px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  background: linear-gradient(180deg, rgba(104, 188, 90, 0.04), rgba(44, 102, 52, 0.16));
 }
 
 .overlay[hidden],
@@ -136,29 +212,30 @@ button {
 
 .panel {
   width: min(520px, 92vw);
-  padding: 22px;
+  padding: 20px;
   border-radius: 8px;
-  background: rgba(255, 249, 224, 0.94);
-  box-shadow: 0 22px 60px rgba(27, 55, 29, 0.28);
 }
 
 .menu-panel {
-  transform: translateY(-3vh);
+  transform: translateY(-2vh);
+  width: min(460px, 88vw);
 }
 
 .title {
   margin: 0;
-  color: #203718;
-  font-size: clamp(38px, 11vw, 70px);
+  color: var(--ink);
+  font-size: clamp(40px, 10vw, 72px);
   line-height: 0.96;
   letter-spacing: 0;
+  text-shadow: 0 3px 0 rgba(255, 255, 255, 0.58);
 }
 
 .subtitle {
-  margin: 10px 0 18px;
-  color: #3e5e35;
+  margin: 9px 0 16px;
+  color: #7a5631;
   font-size: clamp(14px, 2.6vw, 17px);
-  line-height: 1.45;
+  line-height: 1.42;
+  font-weight: 700;
 }
 
 .menu-row,
@@ -171,15 +248,45 @@ button {
 
 .menu-row button,
 .result-actions button {
-  min-height: 44px;
-  flex: 1 1 120px;
+  min-height: 46px;
+  flex: 1 1 112px;
+}
+
+.menu-row button[data-action="start"] {
+  min-height: 68px;
+  flex-basis: 148px;
+  color: transparent;
+  background: transparent var(--asset-ui-play) center / contain no-repeat;
+  border: 0;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.menu-row button[data-action="language"],
+.result-actions button[data-action="language"] {
+  background: linear-gradient(180deg, #56b6f4, #257dca);
+}
+
+.menu-row button[data-action="sound"],
+.result-actions button[data-action="sound"] {
+  background: linear-gradient(180deg, #58c85d, #287f35);
+}
+
+.menu-row button:nth-child(2),
+.result-actions button:nth-last-child(2) {
+  background: linear-gradient(180deg, #67b8ff, #2d83dc);
+}
+
+.menu-row button:nth-child(3),
+.result-actions button:nth-last-child(1) {
+  background: linear-gradient(180deg, #ffcf63, #e09a2a);
 }
 
 .level-label {
   margin: 0 0 8px;
   font-size: 13px;
-  font-weight: 800;
-  color: #5b704e;
+  font-weight: 900;
+  color: #8a6431;
   text-transform: uppercase;
 }
 
@@ -192,34 +299,38 @@ button {
 
 .level-grid button {
   aspect-ratio: 1;
-  background: #f1d47a;
-  color: #463716;
-  box-shadow: inset 0 -4px rgba(97, 78, 30, 0.12);
+  color: var(--ink);
+  background: linear-gradient(180deg, #ffe78c, #f4ba3f);
+  border: 3px solid rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 -5px rgba(105, 75, 25, 0.12), 0 5px 0 rgba(125, 84, 30, 0.16);
 }
 
 .level-grid button[aria-pressed="true"] {
-  background: #58a95b;
+  background: linear-gradient(180deg, #70d976, #3daf4a);
   color: #fff;
 }
 
 .result-title {
   margin: 0 0 8px;
-  font-size: clamp(28px, 7vw, 44px);
+  font-size: clamp(30px, 7vw, 46px);
+  text-shadow: 0 3px 0 rgba(255, 255, 255, 0.62);
 }
 
 .result-body {
   margin: 0;
-  color: #3e5136;
-  line-height: 1.45;
+  color: #704f2f;
+  font-weight: 800;
+  line-height: 1.42;
 }
 
 @media (max-width: 620px) {
   .top-bar {
-    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .objective {
-    max-width: calc(100vw - 132px);
+    max-width: calc(100vw - 126px);
+    padding: 8px 10px;
   }
 
   .hud-actions {
@@ -228,11 +339,11 @@ button {
 
   .icon-button,
   .text-button {
-    min-height: 38px;
+    min-height: 39px;
     padding: 0 10px;
   }
 
   .panel {
-    padding: 18px;
+    padding: 16px;
   }
 }

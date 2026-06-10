@@ -1,8 +1,8 @@
 import "./styles.css";
 import { GameAudio } from "./audio/audio";
 import { getLevel, levels } from "./game/levelLoader";
-import { directionBetween, evaluateTap } from "./game/rules";
-import type { FeedbackState, GamePhase, GameViewState, GridCoord, LevelDefinition, MoveState } from "./game/types";
+import { evaluateTap } from "./game/rules";
+import type { FeedbackState, GamePhase, GameViewState, LevelDefinition, MoveState, SheepDefinition } from "./game/types";
 import { CanvasRenderer } from "./render/canvasRenderer";
 import { Localization } from "./ui/localization";
 
@@ -93,12 +93,12 @@ if (!Number.isFinite(selectedLevelIndex) || selectedLevelIndex < 0 || selectedLe
 
 let phase: GamePhase = "menu";
 let level: LevelDefinition = getLevel(selectedLevelIndex);
-let sheepCoord: GridCoord = { x: level.sheep.x, y: level.sheep.y };
-let sheepFacing = level.sheep.facing;
+let activeSheep: SheepDefinition[] = cloneSheep(level);
 let move: MoveState | null = null;
 let feedback: FeedbackState | null = null;
 let statusKey = "status.ready";
 let resultWasWin = false;
+let enteredCount = 0;
 
 refreshTexts();
 showMenu();
@@ -112,17 +112,22 @@ canvas.addEventListener("pointerdown", async (event) => {
 
   const tap = renderer.pick(event.clientX, event.clientY);
   audio.click();
-  const result = evaluateTap(level, tap);
+  const result = evaluateTap(level, activeSheep, tap);
 
   if (result.outcome === "win") {
+    const selectedSheep = activeSheep.find((candidate) => candidate.id === result.sheepId);
+    if (!selectedSheep) {
+      return;
+    }
+
     move = {
+      sheepId: selectedSheep.id,
+      from: { x: selectedSheep.x, y: selectedSheep.y },
+      facing: selectedSheep.facing,
       startedAt: performance.now(),
       path: result.path,
-      msPerTile: 245,
+      msPerTile: 220,
     };
-    if (result.path.length > 0) {
-      sheepFacing = directionBetween(sheepCoord, result.path[0]);
-    }
     phase = "moving";
     statusKey = "status.moving";
     feedback = null;
@@ -186,12 +191,12 @@ function startLevel(index: number): void {
   localStorage.setItem("sheepRun.selectedLevel", String(selectedLevelIndex));
   level = getLevel(selectedLevelIndex);
   phase = "ready";
-  sheepCoord = { x: level.sheep.x, y: level.sheep.y };
-  sheepFacing = level.sheep.facing;
+  activeSheep = cloneSheep(level);
   move = null;
   feedback = null;
   statusKey = "status.ready";
   resultWasWin = false;
+  enteredCount = 0;
   els.menu.hidden = true;
   els.result.hidden = true;
   els.topBar.hidden = false;
@@ -209,8 +214,8 @@ function showMenu(): void {
   els.topBar.hidden = true;
   els.bottomStatus.hidden = true;
   level = getLevel(selectedLevelIndex);
-  sheepCoord = { x: level.sheep.x, y: level.sheep.y };
-  sheepFacing = level.sheep.facing;
+  activeSheep = cloneSheep(level);
+  enteredCount = 0;
   refreshLevelButtons();
 }
 
@@ -237,14 +242,21 @@ function completeMove(now: number): void {
     return;
   }
 
-  const barn = level.barn;
-  sheepCoord = { x: barn.x, y: barn.y };
-  sheepFacing = barn.entryDirection;
+  const finishedMove = move;
+  activeSheep = activeSheep.filter((sheep) => sheep.id !== finishedMove.sheepId);
+  enteredCount += 1;
   move = null;
-  phase = "won";
-  resultWasWin = true;
-  audio.win();
-  showResult(true, "result.win.body");
+  if (activeSheep.length === 0) {
+    phase = "won";
+    resultWasWin = true;
+    audio.win();
+    showResult(true, "result.win.body");
+    return;
+  }
+
+  phase = "ready";
+  statusKey = "status.sheepEntered";
+  renderUiState();
 }
 
 function tick(now: number): void {
@@ -254,8 +266,7 @@ function tick(now: number): void {
   renderer.render({
     phase,
     level: previewLevel,
-    sheepCoord,
-    sheepFacing,
+    sheep: phase === "menu" ? cloneSheep(previewLevel) : activeSheep,
     move,
     feedback,
     now,
@@ -308,7 +319,11 @@ function refreshTexts(): void {
 function renderUiState(): void {
   els.levelTitle.textContent = i18n.t(level.titleKey);
   els.objective.textContent = i18n.t(level.objectiveKey);
-  els.status.textContent = i18n.t(statusKey);
+  const total = level.sheep.length;
+  els.status.textContent = i18n.t(statusKey)
+    .replace("{done}", String(enteredCount))
+    .replace("{total}", String(total))
+    .replace("{left}", String(activeSheep.length));
 }
 
 function refreshLevelButtons(): void {
@@ -325,12 +340,16 @@ function refreshLevelButtons(): void {
       selectedLevelIndex = index;
       localStorage.setItem("sheepRun.selectedLevel", String(index));
       level = getLevel(index);
-      sheepCoord = { x: level.sheep.x, y: level.sheep.y };
-      sheepFacing = level.sheep.facing;
+      activeSheep = cloneSheep(level);
+      enteredCount = 0;
       refreshLevelButtons();
     });
     els.levelGrid.appendChild(button);
   });
+}
+
+function cloneSheep(sourceLevel: LevelDefinition): SheepDefinition[] {
+  return sourceLevel.sheep.map((sheep) => ({ ...sheep }));
 }
 
 function shortLocaleLabel(): string {

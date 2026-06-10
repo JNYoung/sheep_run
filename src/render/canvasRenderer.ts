@@ -1,10 +1,11 @@
 import { directionBetween } from "../game/rules";
-import type { Direction, GameViewState, GridCoord, LevelDefinition, ObstacleDefinition, TapIntent, TapTarget } from "../game/types";
+import type { Direction, GameViewState, GridCoord, LevelDefinition, ObstacleDefinition, SheepDefinition, TapIntent, TapTarget } from "../game/types";
 import { createIsoLayout, diamondPoints, gridToScreen, pointInDiamond, type IsoLayout, type ScreenPoint } from "./iso";
 
 type HitTarget = {
   type: TapTarget;
   coord: GridCoord | null;
+  sheepId?: string;
   depth: number;
   contains: (point: ScreenPoint) => boolean;
 };
@@ -14,9 +15,51 @@ type Drawable = {
   draw: () => void;
 };
 
+const ASSET_BASE = "/assets/v1";
+
+const assetPaths = {
+  barn: `${ASSET_BASE}/structures/barn.png`,
+  boardEdgeCorner: `${ASSET_BASE}/scene/board_edge_corner.png`,
+  contactShadow: `${ASSET_BASE}/scene/contact_shadow.png`,
+  directionArrow: `${ASSET_BASE}/scene/direction_arrow.png`,
+  fenceSegment: `${ASSET_BASE}/obstacles/fence_segment.png`,
+  flowerPatch: `${ASSET_BASE}/obstacles/flower_patch.png`,
+  gateSegment: `${ASSET_BASE}/obstacles/gate_segment.png`,
+  grassCornerFlowers: `${ASSET_BASE}/scene/grass_corner_flowers.png`,
+  grassTileDark: `${ASSET_BASE}/scene/grass_tile_dark.png`,
+  grassTileLight: `${ASSET_BASE}/scene/grass_tile_light.png`,
+  hayBale: `${ASSET_BASE}/obstacles/hay_bale.png`,
+  hayBucket: `${ASSET_BASE}/obstacles/hay_bucket.png`,
+  hedge: `${ASSET_BASE}/obstacles/hedge.png`,
+  pastureTree: `${ASSET_BASE}/obstacles/pasture_tree.png`,
+  shrubFlower: `${ASSET_BASE}/obstacles/shrub_flower.png`,
+  successSparkle: `${ASSET_BASE}/scene/success_sparkle.png`,
+  wrongTapRipple: `${ASSET_BASE}/scene/wrong_tap_ripple.png`,
+  sheepIdleNorth: `${ASSET_BASE}/sprites/sheep/sheep_idle_north.png`,
+  sheepIdleEast: `${ASSET_BASE}/sprites/sheep/sheep_idle_east.png`,
+  sheepIdleSouth: `${ASSET_BASE}/sprites/sheep/sheep_idle_south.png`,
+  sheepIdleWest: `${ASSET_BASE}/sprites/sheep/sheep_idle_west.png`,
+  sheepRunNorth: `${ASSET_BASE}/sprites/sheep/sheep_run_north.png`,
+  sheepRunEast: `${ASSET_BASE}/sprites/sheep/sheep_run_east.png`,
+  sheepRunSouth: `${ASSET_BASE}/sprites/sheep/sheep_run_south.png`,
+  sheepRunWest: `${ASSET_BASE}/sprites/sheep/sheep_run_west.png`,
+} as const;
+
+type AssetKey = keyof typeof assetPaths;
+
+type DrawImageOptions = {
+  alpha?: number;
+  anchorX?: number;
+  anchorY?: number;
+  height?: number;
+  rotation?: number;
+  width?: number;
+};
+
 export class CanvasRenderer {
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
+  private readonly assets = this.loadAssets();
   private hitTargets: HitTarget[] = [];
   private layout: IsoLayout | null = null;
 
@@ -30,6 +73,23 @@ export class CanvasRenderer {
     this.ctx = ctx;
   }
 
+  private loadAssets(): Record<AssetKey, HTMLImageElement> {
+    const assets = {} as Record<AssetKey, HTMLImageElement>;
+    for (const [key, src] of Object.entries(assetPaths) as [AssetKey, string][]) {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = src;
+      assets[key] = image;
+    }
+
+    return assets;
+  }
+
+  private asset(key: AssetKey): HTMLImageElement | null {
+    const image = this.assets[key];
+    return image.complete && image.naturalWidth > 0 ? image : null;
+  }
+
   render(view: GameViewState): void {
     const layout = this.prepareCanvas(view.level);
     this.layout = layout;
@@ -38,7 +98,8 @@ export class CanvasRenderer {
     const ctx = this.ctx;
     ctx.save();
     ctx.setTransform(layout.dpr, 0, 0, layout.dpr, 0, 0);
-    this.drawBackground(layout, view.now);
+    this.drawBackground(layout, view.level, view.now);
+    this.drawPenPark(layout, view.level);
     this.drawBoardBase(layout, view.level);
     this.drawTiles(layout, view.level);
 
@@ -51,15 +112,28 @@ export class CanvasRenderer {
     }
 
     drawables.push({
-      depth: view.level.barn.x + view.level.barn.y + 0.35,
-      draw: () => this.drawBarn(layout, view.level.barn),
+      depth: view.level.pen.x + view.level.pen.y + 0.35,
+      draw: () => this.drawSheepPen(layout, view.level.pen),
     });
 
-    const sheepRender = this.resolveSheepRender(view);
-    drawables.push({
-      depth: sheepRender.coord.x + sheepRender.coord.y + 0.5,
-      draw: () => this.drawSheep(layout, sheepRender.coord, sheepRender.facing, view.phase === "moving", view.now),
-    });
+    for (const sheep of view.sheep) {
+      if (view.move?.sheepId === sheep.id) {
+        continue;
+      }
+
+      drawables.push({
+        depth: sheep.x + sheep.y + 0.5,
+        draw: () => this.drawSheep(layout, sheep, false, view.now),
+      });
+    }
+
+    const movingSheep = this.resolveMovingSheep(view);
+    if (movingSheep) {
+      drawables.push({
+        depth: movingSheep.x + movingSheep.y + 0.75,
+        draw: () => this.drawSheep(layout, movingSheep, true, view.now),
+      });
+    }
 
     drawables.sort((a, b) => a.depth - b.depth);
     for (const drawable of drawables) {
@@ -84,6 +158,7 @@ export class CanvasRenderer {
         return {
           target: target.type,
           coord: target.coord,
+          sheepId: target.sheepId,
         };
       }
     }
@@ -106,31 +181,29 @@ export class CanvasRenderer {
     return layout;
   }
 
-  private resolveSheepRender(view: GameViewState): { coord: GridCoord; facing: Direction } {
+  private resolveMovingSheep(view: GameViewState): SheepDefinition | null {
     if (!view.move || view.move.path.length === 0) {
-      return {
-        coord: view.sheepCoord,
-        facing: view.sheepFacing,
-      };
+      return null;
     }
 
     const elapsed = Math.max(0, view.now - view.move.startedAt);
     const segmentFloat = elapsed / view.move.msPerTile;
     const segmentIndex = Math.min(view.move.path.length - 1, Math.floor(segmentFloat));
     const localT = Math.min(1, segmentFloat - segmentIndex);
-    const from = segmentIndex === 0 ? view.sheepCoord : view.move.path[segmentIndex - 1];
+    const from = segmentIndex === 0 ? view.move.from : view.move.path[segmentIndex - 1];
     const to = view.move.path[segmentIndex];
+    const source = view.sheep.find((sheep) => sheep.id === view.move?.sheepId);
 
     return {
-      coord: {
-        x: from.x + (to.x - from.x) * this.ease(localT),
-        y: from.y + (to.y - from.y) * this.ease(localT),
-      },
+      id: view.move.sheepId,
+      x: from.x + (to.x - from.x) * this.ease(localT),
+      y: from.y + (to.y - from.y) * this.ease(localT),
       facing: directionBetween(from, to),
+      color: source?.color ?? "cream",
     };
   }
 
-  private drawBackground(layout: IsoLayout, now: number): void {
+  private drawBackground(layout: IsoLayout, level: LevelDefinition, now: number): void {
     const ctx = this.ctx;
     const sky = ctx.createLinearGradient(0, 0, 0, layout.height);
     sky.addColorStop(0, "#a9ddf4");
@@ -143,14 +216,47 @@ export class CanvasRenderer {
     this.drawCloud(layout.width * 0.14, layout.height * 0.18 + Math.sin(now * 0.0004) * 4, layout.scale * 0.9);
     this.drawCloud(layout.width * 0.68, layout.height * 0.21 + Math.cos(now * 0.00035) * 3, layout.scale * 0.7);
 
-    this.ctx.fillStyle = "#6abf63";
+    this.ctx.fillStyle = "#77cf6d";
     this.ctx.beginPath();
     this.ctx.ellipse(layout.width * 0.23, layout.height * 0.6, layout.width * 0.42, layout.height * 0.16, -0.12, 0, Math.PI * 2);
     this.ctx.fill();
-    this.ctx.fillStyle = "#58ad5a";
+    this.ctx.fillStyle = "#57b85e";
     this.ctx.beginPath();
     this.ctx.ellipse(layout.width * 0.78, layout.height * 0.62, layout.width * 0.48, layout.height * 0.18, 0.08, 0, Math.PI * 2);
     this.ctx.fill();
+
+    if (!this.drawAsset("pastureTree", layout.width * 0.15, layout.height * 0.51, { width: 128 * layout.scale, anchorY: 1 })) {
+      this.drawCandyTree(layout, layout.width * 0.15, layout.height * 0.46, 1.05);
+    }
+    this.drawAsset("shrubFlower", layout.width * 0.29, layout.height * 0.52, { width: 86 * layout.scale, anchorY: 1 });
+    this.drawAsset("pastureTree", layout.width * 0.87, layout.height * 0.49, { width: 112 * layout.scale, anchorY: 1 });
+    this.drawAsset("pastureTree", layout.width * 0.08, layout.height * 0.73, { width: 82 * layout.scale, anchorY: 1, alpha: 0.95 });
+    this.drawAsset("pastureTree", layout.width * 0.94, layout.height * 0.73, { width: 78 * layout.scale, anchorY: 1, alpha: 0.95 });
+    this.drawAsset("hayBucket", layout.width * 0.76, layout.height * 0.88, { width: 82 * layout.scale, anchorY: 1, alpha: 0.95 });
+
+    const penAnchor = gridToScreen(layout, level.pen);
+    if (!this.drawAsset("fenceSegment", penAnchor.x - 145 * layout.scale, penAnchor.y + 82 * layout.scale, { width: 126 * layout.scale, anchorY: 1, rotation: 0.08, alpha: 0.9 })) {
+      this.drawFenceRun(layout, penAnchor.x - 176 * layout.scale, penAnchor.y + 76 * layout.scale, 0.74);
+    }
+    this.drawAsset("fenceSegment", penAnchor.x + 132 * layout.scale, penAnchor.y + 82 * layout.scale, { width: 126 * layout.scale, anchorY: 1, rotation: 0.08, alpha: 0.9 });
+  }
+
+  private drawPenPark(layout: IsoLayout, level: LevelDefinition): void {
+    const center = gridToScreen(layout, level.pen);
+    const ctx = this.ctx;
+    const s = layout.scale;
+    ctx.save();
+    ctx.fillStyle = "rgba(255, 230, 146, 0.42)";
+    ctx.beginPath();
+    ctx.ellipse(center.x, center.y + 76 * s, 220 * s, 62 * s, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.58)";
+    ctx.lineWidth = 5 * s;
+    ctx.beginPath();
+    ctx.moveTo(center.x - 98 * s, center.y + 78 * s);
+    ctx.quadraticCurveTo(center.x, center.y + 122 * s, center.x + 98 * s, center.y + 78 * s);
+    ctx.stroke();
+    ctx.restore();
   }
 
   private drawBoardBase(layout: IsoLayout, level: LevelDefinition): void {
@@ -179,9 +285,12 @@ export class CanvasRenderer {
         const coord = { x, y };
         const center = gridToScreen(layout, coord);
         const fill = (x + y) % 2 === 0 ? "#8fda68" : "#7fcb5d";
-        this.fillPolygon(diamondPoints(layout, center, 0.94), fill, "rgba(255,255,255,0.52)");
-        this.fillPolygon(diamondPoints(layout, { x: center.x, y: center.y + layout.tileHeight * 0.14 }, 0.9), "rgba(68,118,52,0.12)");
-        this.drawGrassFlecks(layout, center, x, y);
+        const tileKey = (x + y) % 2 === 0 ? "grassTileLight" : "grassTileDark";
+        if (!this.drawAsset(tileKey, center.x, center.y + layout.tileHeight * 0.58, { width: layout.tileWidth * 1.02, anchorY: 1 })) {
+          this.fillPolygon(diamondPoints(layout, center, 0.94), fill, "rgba(255,255,255,0.52)");
+          this.fillPolygon(diamondPoints(layout, { x: center.x, y: center.y + layout.tileHeight * 0.14 }, 0.9), "rgba(68,118,52,0.12)");
+          this.drawGrassFlecks(layout, center, x, y);
+        }
         this.hitTargets.push({
           type: "board",
           coord,
@@ -194,12 +303,30 @@ export class CanvasRenderer {
 
   private drawObstacle(layout: IsoLayout, obstacle: ObstacleDefinition): void {
     const center = gridToScreen(layout, obstacle);
-    if (obstacle.kind === "hay") {
-      this.drawHay(layout, center);
+    const s = layout.scale;
+    this.drawShadow(center.x, center.y + 20 * s, 72 * s, 18 * s, 0.13);
+
+    let drewAsset = false;
+    if (obstacle.kind === "tree") {
+      drewAsset = this.drawAsset("pastureTree", center.x, center.y + 48 * s, { width: 94 * s, anchorY: 1 });
+    } else if (obstacle.kind === "hay") {
+      drewAsset = this.drawAsset("hayBale", center.x, center.y + 36 * s, { width: 82 * s, anchorY: 1 });
     } else if (obstacle.kind === "flower") {
-      this.drawFlowerPatch(layout, center);
+      drewAsset = this.drawAsset("shrubFlower", center.x, center.y + 34 * s, { width: 82 * s, anchorY: 1 });
     } else {
-      this.drawFence(layout, center);
+      drewAsset = this.drawAsset("fenceSegment", center.x, center.y + 32 * s, { width: 96 * s, anchorY: 1 });
+    }
+
+    if (!drewAsset) {
+      if (obstacle.kind === "tree") {
+        this.drawMiniTree(layout, center);
+      } else if (obstacle.kind === "hay") {
+        this.drawHay(layout, center);
+      } else if (obstacle.kind === "flower") {
+        this.drawFlowerPatch(layout, center);
+      } else {
+        this.drawFence(layout, center);
+      }
     }
 
     this.hitTargets.push({
@@ -210,88 +337,102 @@ export class CanvasRenderer {
     });
   }
 
-  private drawBarn(layout: IsoLayout, barn: GridCoord): void {
+  private drawSheepPen(layout: IsoLayout, pen: GridCoord): void {
     const ctx = this.ctx;
-    const center = gridToScreen(layout, barn);
+    const center = gridToScreen(layout, pen);
     const s = layout.scale;
-    this.drawShadow(center.x, center.y + 28 * s, 94 * s, 28 * s, 0.2);
+    if (this.asset("barn")) {
+      this.drawAsset("grassCornerFlowers", center.x, center.y + 106 * s, { width: 160 * s, anchorY: 1, alpha: 0.65 });
+      this.drawShadow(center.x, center.y + 86 * s, 190 * s, 42 * s, 0.18);
+      this.drawAsset("barn", center.x + 18 * s, center.y + 102 * s, { width: 230 * s, anchorY: 1 });
+      this.hitTargets.push({
+        type: "pen",
+        coord: pen,
+        depth: pen.x + pen.y + 0.55,
+        contains: (point) => this.pointInRect(point, center.x, center.y + 36 * s, 216 * s, 168 * s),
+      });
+      return;
+    }
+
+    this.drawShadow(center.x, center.y + 42 * s, 184 * s, 36 * s, 0.18);
 
     ctx.save();
-    ctx.translate(center.x, center.y - 38 * s);
-    const wall = "#df4d3f";
-    const wallSide = "#b73934";
-    const roof = "#426f92";
-    const roofLight = "#5f91b5";
-
+    ctx.translate(center.x, center.y + 12 * s);
     this.fillPolygon([
-      { x: -46 * s, y: 10 * s },
-      { x: 0, y: -14 * s },
-      { x: 46 * s, y: 10 * s },
-      { x: 0, y: 34 * s },
-    ], "#8f2d2b");
-
+      { x: -88 * s, y: 8 * s },
+      { x: 0, y: -36 * s },
+      { x: 88 * s, y: 8 * s },
+      { x: 0, y: 52 * s },
+    ], "#fff2cf", "#ffffff");
     this.fillPolygon([
-      { x: -42 * s, y: -18 * s },
-      { x: 0, y: -42 * s },
-      { x: 44 * s, y: -18 * s },
-      { x: 0, y: 4 * s },
-    ], roofLight, "#d7edf7");
-
-    this.fillPolygon([
-      { x: 0, y: 4 * s },
-      { x: 44 * s, y: -18 * s },
-      { x: 44 * s, y: 22 * s },
-      { x: 0, y: 44 * s },
-    ], roof, "rgba(255,255,255,0.28)");
-
-    this.fillPolygon([
-      { x: -36 * s, y: 0 },
-      { x: 0, y: -18 * s },
-      { x: 0, y: 44 * s },
-      { x: -36 * s, y: 24 * s },
-    ], wall, "rgba(255,255,255,0.26)");
-
-    this.fillPolygon([
-      { x: 0, y: -18 * s },
-      { x: 36 * s, y: 0 },
-      { x: 36 * s, y: 24 * s },
-      { x: 0, y: 44 * s },
-    ], wallSide, "rgba(255,255,255,0.16)");
-
-    ctx.fillStyle = "#20150f";
+      { x: -72 * s, y: 8 * s },
+      { x: 0, y: -26 * s },
+      { x: 72 * s, y: 8 * s },
+      { x: 0, y: 42 * s },
+    ], "#f9c86a", "#fff4cc");
+    ctx.strokeStyle = "#9a6f34";
+    ctx.lineWidth = 9 * s;
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.ellipse(0, 28 * s, 16 * s, 20 * s, 0, Math.PI, 0);
-    ctx.lineTo(16 * s, 28 * s);
-    ctx.lineTo(16 * s, 44 * s);
-    ctx.lineTo(-16 * s, 44 * s);
-    ctx.lineTo(-16 * s, 28 * s);
-    ctx.fill();
-
-    ctx.fillStyle = "#ffe39d";
-    this.roundRect(-17 * s, -18 * s, 34 * s, 14 * s, 5 * s);
-    ctx.fill();
-    ctx.fillStyle = "#5d3c25";
+    ctx.moveTo(-58 * s, 0);
+    ctx.lineTo(-58 * s, 50 * s);
+    ctx.moveTo(-26 * s, -14 * s);
+    ctx.lineTo(-26 * s, 58 * s);
+    ctx.moveTo(26 * s, -14 * s);
+    ctx.lineTo(26 * s, 58 * s);
+    ctx.moveTo(58 * s, 0);
+    ctx.lineTo(58 * s, 50 * s);
+    ctx.stroke();
+    ctx.strokeStyle = "#b98642";
+    ctx.lineWidth = 7 * s;
     ctx.beginPath();
-    ctx.arc(0, -11 * s, 4.5 * s, 0, Math.PI * 2);
+    ctx.moveTo(-82 * s, 18 * s);
+    ctx.quadraticCurveTo(0, 56 * s, 82 * s, 18 * s);
+    ctx.moveTo(-78 * s, 36 * s);
+    ctx.quadraticCurveTo(0, 76 * s, 78 * s, 36 * s);
+    ctx.stroke();
+    ctx.fillStyle = "#fff8df";
+    this.roundRect(-45 * s, -68 * s, 90 * s, 32 * s, 15 * s);
+    ctx.fill();
+    ctx.strokeStyle = "#e8bd73";
+    ctx.lineWidth = 4 * s;
+    ctx.stroke();
+    ctx.fillStyle = "#6d4b2b";
+    ctx.beginPath();
+    ctx.ellipse(-10 * s, -52 * s, 9 * s, 6 * s, 0, 0, Math.PI * 2);
+    ctx.ellipse(7 * s, -52 * s, 10 * s, 7 * s, 0, 0, Math.PI * 2);
+    ctx.arc(17 * s, -52 * s, 5 * s, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
     this.hitTargets.push({
-      type: "barn",
-      coord: barn,
-      depth: barn.x + barn.y + 0.55,
-      contains: (point) => this.pointInRect(point, center.x, center.y - 42 * s, 102 * s, 112 * s),
+      type: "pen",
+      coord: pen,
+      depth: pen.x + pen.y + 0.55,
+      contains: (point) => this.pointInRect(point, center.x, center.y + 12 * s, 184 * s, 120 * s),
     });
   }
 
-  private drawSheep(layout: IsoLayout, coord: GridCoord, facing: Direction, moving: boolean, now: number): void {
+  private drawSheep(layout: IsoLayout, sheep: SheepDefinition, moving: boolean, now: number): void {
     const ctx = this.ctx;
-    const center = gridToScreen(layout, coord);
+    const center = gridToScreen(layout, sheep);
     const s = layout.scale;
     const bounce = moving ? Math.sin(now * 0.024) * 5 * s : Math.sin(now * 0.003) * 2 * s;
+    if (this.drawSheepAsset(layout, sheep, moving, center, bounce)) {
+      this.hitTargets.push({
+        type: "sheep",
+        coord: { x: Math.round(sheep.x), y: Math.round(sheep.y) },
+        sheepId: sheep.id,
+        depth: sheep.x + sheep.y + 0.75,
+        contains: (point) => this.pointInRect(point, center.x, center.y - 26 * s, 104 * s, 96 * s),
+      });
+      return;
+    }
+
     const phase = moving ? Math.sin(now * 0.026) : Math.sin(now * 0.004);
     const bodyY = center.y - 34 * s + bounce;
-    const headOffset = this.headOffsetFor(facing, s);
+    const headOffset = this.headOffsetFor(sheep.facing, s);
+    const palette = this.sheepPalette(sheep.color ?? "cream");
 
     this.drawShadow(center.x, center.y + 22 * s, 72 * s, 22 * s, 0.22);
 
@@ -301,9 +442,9 @@ export class CanvasRenderer {
       ctx.scale(1 + Math.abs(phase) * 0.03, 1 - Math.abs(phase) * 0.025);
     }
 
-    const wool = "#fff0c8";
-    const woolShade = "#ead8b7";
-    const face = "#c79063";
+    const wool = palette.wool;
+    const woolShade = palette.shade;
+    const face = palette.face;
     const leg = "#3f2a21";
 
     for (const puff of [
@@ -336,18 +477,21 @@ export class CanvasRenderer {
     ctx.ellipse(headOffset.x + 7 * s, headOffset.y - 12 * s, 6 * s, 3.5 * s, 0.55, 0, Math.PI * 2);
     ctx.fill();
 
-    const eyeShift = facing === "west" ? -4 : facing === "east" ? 4 : 0;
+    const eyeShift = sheep.facing === "west" ? -4 : sheep.facing === "east" ? 4 : 0;
     ctx.fillStyle = "#2b211d";
     ctx.beginPath();
     ctx.arc(headOffset.x - 4 * s + eyeShift * s * 0.3, headOffset.y - 2 * s, 2.3 * s, 0, Math.PI * 2);
     ctx.arc(headOffset.x + 6 * s + eyeShift * s * 0.3, headOffset.y - 2 * s, 2.3 * s, 0, Math.PI * 2);
     ctx.fill();
+
+    this.drawDirectionBadge(ctx, sheep.facing, s);
     ctx.restore();
 
     this.hitTargets.push({
       type: "sheep",
-      coord: { x: Math.round(coord.x), y: Math.round(coord.y) },
-      depth: coord.x + coord.y + 0.75,
+      coord: { x: Math.round(sheep.x), y: Math.round(sheep.y) },
+      sheepId: sheep.id,
+      depth: sheep.x + sheep.y + 0.75,
       contains: (point) => this.pointInRect(point, center.x, center.y - 38 * s, 88 * s, 86 * s),
     });
   }
@@ -365,6 +509,15 @@ export class CanvasRenderer {
 
     const center = view.feedback.coord ? gridToScreen(layout, view.feedback.coord) : { x: layout.width * 0.5, y: layout.height * 0.54 };
     const ctx = this.ctx;
+    if (this.drawAsset("wrongTapRipple", center.x, center.y + 8 * layout.scale, {
+      width: (64 + age * 0.018) * layout.scale,
+      anchorX: 0.5,
+      anchorY: 0.5,
+      alpha,
+    })) {
+      return;
+    }
+
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.strokeStyle = "#ff3f3f";
@@ -377,9 +530,155 @@ export class CanvasRenderer {
 
   private drawForegroundDecor(layout: IsoLayout, level: LevelDefinition): void {
     const last = gridToScreen(layout, { x: level.width - 1, y: level.height - 1 });
-    this.drawFencePost(layout, last.x - 90 * layout.scale, last.y + 74 * layout.scale);
-    this.drawFencePost(layout, last.x - 38 * layout.scale, last.y + 92 * layout.scale);
-    this.drawFencePost(layout, last.x + 16 * layout.scale, last.y + 104 * layout.scale);
+    const s = layout.scale;
+    const drewGate = this.drawAsset("gateSegment", last.x - 80 * s, last.y + 102 * s, { width: 98 * s, anchorY: 1, rotation: -0.05, alpha: 0.95 });
+    this.drawAsset("flowerPatch", last.x + 22 * s, last.y + 105 * s, { width: 68 * s, anchorY: 1, alpha: 0.95 });
+    if (!drewGate) {
+      this.drawFencePost(layout, last.x - 90 * layout.scale, last.y + 74 * layout.scale);
+      this.drawFencePost(layout, last.x - 38 * layout.scale, last.y + 92 * layout.scale);
+      this.drawFencePost(layout, last.x + 16 * layout.scale, last.y + 104 * layout.scale);
+    }
+  }
+
+  private drawSheepAsset(layout: IsoLayout, sheep: SheepDefinition, moving: boolean, center: ScreenPoint, bounce: number): boolean {
+    const assetKey = this.sheepAssetKey(sheep.facing, moving);
+    if (!this.asset(assetKey)) {
+      return false;
+    }
+
+    const s = layout.scale;
+    this.drawShadow(center.x, center.y + 26 * s, 76 * s, 21 * s, 0.2);
+    this.drawDirectionCue(layout, center, sheep.facing);
+    this.drawAsset(assetKey, center.x, center.y + 36 * s + bounce, { height: 92 * s, anchorY: 0.95 });
+    return true;
+  }
+
+  private sheepAssetKey(facing: Direction, moving: boolean): AssetKey {
+    const prefix = moving ? "sheepRun" : "sheepIdle";
+    switch (facing) {
+      case "north":
+        return `${prefix}North` as AssetKey;
+      case "east":
+        return `${prefix}East` as AssetKey;
+      case "south":
+        return `${prefix}South` as AssetKey;
+      case "west":
+      default:
+        return `${prefix}West` as AssetKey;
+    }
+  }
+
+  private drawDirectionCue(layout: IsoLayout, center: ScreenPoint, facing: Direction): void {
+    const s = layout.scale;
+    const offset = {
+      north: { x: 0, y: -16 * s },
+      east: { x: 25 * s, y: 7 * s },
+      south: { x: 0, y: 25 * s },
+      west: { x: -25 * s, y: 7 * s },
+    }[facing];
+
+    if (!this.drawAsset("directionArrow", center.x + offset.x, center.y + offset.y, {
+      width: 30 * s,
+      anchorX: 0.5,
+      anchorY: 0.5,
+      alpha: 0.88,
+      rotation: this.directionRotation(facing),
+    })) {
+      return;
+    }
+  }
+
+  private sheepPalette(color: SheepDefinition["color"]): { wool: string; shade: string; face: string } {
+    switch (color) {
+      case "pink":
+        return { wool: "#ffd4e6", shade: "#efabc9", face: "#c98664" };
+      case "mint":
+        return { wool: "#cbf7d1", shade: "#97dba8", face: "#ba835f" };
+      case "blue":
+        return { wool: "#cfe7ff", shade: "#9fc4ec", face: "#b98464" };
+      case "yellow":
+        return { wool: "#fff2a9", shade: "#e8c86f", face: "#bf855f" };
+      case "cream":
+      default:
+        return { wool: "#fff0c8", shade: "#ead8b7", face: "#c79063" };
+    }
+  }
+
+  private drawDirectionBadge(ctx: CanvasRenderingContext2D, facing: Direction, s: number): void {
+    ctx.save();
+    ctx.translate(0, -35 * s);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
+    ctx.beginPath();
+    ctx.arc(0, 0, 11 * s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(145, 110, 55, 0.35)";
+    ctx.lineWidth = 1.8 * s;
+    ctx.stroke();
+    ctx.rotate({ north: -Math.PI / 2, east: 0, south: Math.PI / 2, west: Math.PI }[facing]);
+    ctx.fillStyle = "#7b5a2b";
+    ctx.beginPath();
+    ctx.moveTo(6 * s, 0);
+    ctx.lineTo(-4 * s, -5 * s);
+    ctx.lineTo(-2 * s, 0);
+    ctx.lineTo(-4 * s, 5 * s);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  private drawCandyTree(layout: IsoLayout, x: number, y: number, scale: number): void {
+    const ctx = this.ctx;
+    const s = layout.scale * scale;
+    this.drawShadow(x, y + 54 * s, 92 * s, 26 * s, 0.14);
+    ctx.save();
+    ctx.fillStyle = "#8d5e2e";
+    this.roundRect(x - 12 * s, y + 4 * s, 24 * s, 62 * s, 9 * s);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.16)";
+    this.roundRect(x - 7 * s, y + 10 * s, 4 * s, 42 * s, 3 * s);
+    ctx.fill();
+    const blobs = [
+      [-32, -18, 31],
+      [-12, -38, 37],
+      [18, -30, 34],
+      [34, -4, 30],
+      [-10, -4, 38],
+    ];
+    for (const [bx, by, r] of blobs) {
+      const gradient = ctx.createRadialGradient(x + (bx - 8) * s, y + (by - 10) * s, 4 * s, x + bx * s, y + by * s, r * s);
+      gradient.addColorStop(0, "#d7f26d");
+      gradient.addColorStop(0.55, "#9bd846");
+      gradient.addColorStop(1, "#6fb334");
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(x + bx * s, y + by * s, r * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  private drawMiniTree(layout: IsoLayout, center: ScreenPoint): void {
+    this.drawCandyTree(layout, center.x, center.y - 28 * layout.scale, 0.42);
+  }
+
+  private drawFenceRun(layout: IsoLayout, x: number, y: number, scale: number): void {
+    const s = layout.scale * scale;
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = "#f6e8be";
+    ctx.lineWidth = 7 * s;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 126 * s, y + 10 * s);
+    ctx.stroke();
+    ctx.strokeStyle = "#d4a968";
+    ctx.lineWidth = 2 * s;
+    ctx.stroke();
+    for (let i = 0; i < 4; i += 1) {
+      this.drawFencePost(layout, x + i * 42 * s, y - 2 * s + i * 3 * s);
+    }
+    ctx.restore();
   }
 
   private drawHay(layout: IsoLayout, center: ScreenPoint): void {
@@ -541,6 +840,10 @@ export class CanvasRenderer {
   }
 
   private drawShadow(x: number, y: number, width: number, height: number, alpha: number): void {
+    if (this.drawAsset("contactShadow", x, y, { width, height, alpha, anchorY: 0.5 })) {
+      return;
+    }
+
     const ctx = this.ctx;
     ctx.save();
     ctx.fillStyle = `rgba(35, 58, 30, ${alpha})`;
@@ -548,6 +851,45 @@ export class CanvasRenderer {
     ctx.ellipse(x, y, width * 0.5, height * 0.5, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
+  }
+
+  private drawAsset(key: AssetKey, x: number, y: number, options: DrawImageOptions): boolean {
+    const image = this.asset(key);
+    if (!image) {
+      return false;
+    }
+
+    const width = options.width ?? (options.height ? image.naturalWidth * (options.height / image.naturalHeight) : image.naturalWidth);
+    const height = options.height ?? image.naturalHeight * (width / image.naturalWidth);
+    const anchorX = options.anchorX ?? 0.5;
+    const anchorY = options.anchorY ?? 1;
+    const alpha = options.alpha ?? 1;
+    const rotation = options.rotation ?? 0;
+
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.globalAlpha *= alpha;
+    ctx.translate(x, y);
+    if (rotation !== 0) {
+      ctx.rotate(rotation);
+    }
+    ctx.drawImage(image, -width * anchorX, -height * anchorY, width, height);
+    ctx.restore();
+    return true;
+  }
+
+  private directionRotation(facing: Direction): number {
+    switch (facing) {
+      case "east":
+        return Math.PI * 0.5;
+      case "south":
+        return Math.PI;
+      case "west":
+        return -Math.PI * 0.5;
+      case "north":
+      default:
+        return 0;
+    }
   }
 
   private fillDiamond(center: ScreenPoint, width: number, height: number, fill: string | CanvasGradient, stroke?: string): void {

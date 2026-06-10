@@ -4,7 +4,13 @@ import path from "node:path";
 const root = process.cwd();
 const levelsDir = path.join(root, "src", "content", "levels");
 const allowedDirections = new Set(["north", "east", "south", "west"]);
-const allowedObstacles = new Set(["fence", "hay", "flower"]);
+const allowedObstacles = new Set(["fence", "hay", "flower", "tree"]);
+const deltas = {
+  north: { x: 0, y: -1 },
+  east: { x: 1, y: 0 },
+  south: { x: 0, y: 1 },
+  west: { x: -1, y: 0 },
+};
 
 let failed = false;
 
@@ -26,6 +32,50 @@ function inBounds(level, coord) {
     coord.y < level.height;
 }
 
+function hasClearPath(level, selectedSheep, sheep) {
+  const delta = deltas[selectedSheep.facing];
+  const sheepKeys = new Set(sheep.filter((candidate) => candidate.id !== selectedSheep.id).map(key));
+  const obstacleKeys = new Set((level.obstacles || []).map(key));
+  let coord = {
+    x: selectedSheep.x + delta.x,
+    y: selectedSheep.y + delta.y,
+  };
+  let guard = level.width * level.height + 4;
+
+  while (guard > 0 && inBounds(level, coord)) {
+    if (sheepKeys.has(key(coord)) || obstacleKeys.has(key(coord))) {
+      return false;
+    }
+
+    coord = {
+      x: coord.x + delta.x,
+      y: coord.y + delta.y,
+    };
+    guard -= 1;
+  }
+
+  return true;
+}
+
+function simulateClear(level) {
+  const sheep = level.sheep.map((candidate) => ({ ...candidate }));
+  const order = [];
+  let guard = sheep.length * sheep.length + 4;
+
+  while (sheep.length > 0 && guard > 0) {
+    const next = sheep.find((candidate) => hasClearPath(level, candidate, sheep));
+    if (!next) {
+      return { completed: false, order };
+    }
+
+    order.push(next.id);
+    sheep.splice(sheep.indexOf(next), 1);
+    guard -= 1;
+  }
+
+  return { completed: sheep.length === 0, order };
+}
+
 function validateLevel(file) {
   const fullPath = path.join(levelsDir, file);
   const level = JSON.parse(fs.readFileSync(fullPath, "utf8"));
@@ -33,38 +83,35 @@ function validateLevel(file) {
   if (!level.id) fail(`${file}: missing id`);
   if (!level.titleKey || !level.objectiveKey) fail(`${file}: missing localization keys`);
   if (!Number.isInteger(level.width) || !Number.isInteger(level.height)) fail(`${file}: width/height must be integers`);
-  if (level.width < 3 || level.height < 3) fail(`${file}: board must be at least 3x3`);
-  if (!inBounds(level, level.sheep)) fail(`${file}: sheep is out of bounds`);
-  if (!inBounds(level, level.barn)) fail(`${file}: barn is out of bounds`);
-  if (!allowedDirections.has(level.sheep?.facing)) fail(`${file}: invalid sheep facing`);
-  if (!allowedDirections.has(level.barn?.entryDirection)) fail(`${file}: invalid barn entryDirection`);
+  if (level.width < 4 || level.height < 4) fail(`${file}: board must be at least 4x4`);
+  if (!level.pen || typeof level.pen.x !== "number" || typeof level.pen.y !== "number") fail(`${file}: missing pen`);
+  if (!allowedDirections.has(level.pen?.entryDirection)) fail(`${file}: invalid pen entryDirection`);
+  if (!Array.isArray(level.sheep) || level.sheep.length < 3) fail(`${file}: expected at least 3 sheep`);
 
   const occupied = new Set();
-  occupied.add(key(level.sheep));
-  if (occupied.has(key(level.barn))) fail(`${file}: sheep and barn overlap`);
-  occupied.add(key(level.barn));
+  const ids = new Set();
+  for (const sheep of level.sheep || []) {
+    if (!sheep.id) fail(`${file}: sheep missing id`);
+    if (ids.has(sheep.id)) fail(`${file}: duplicate sheep id ${sheep.id}`);
+    ids.add(sheep.id);
+    if (!inBounds(level, sheep)) fail(`${file}: sheep ${sheep.id} is out of bounds`);
+    if (!allowedDirections.has(sheep.facing)) fail(`${file}: invalid sheep facing for ${sheep.id}`);
+    const sheepKey = key(sheep);
+    if (occupied.has(sheepKey)) fail(`${file}: sheep overlap at ${sheepKey}`);
+    occupied.add(sheepKey);
+  }
 
   for (const obstacle of level.obstacles || []) {
     if (!inBounds(level, obstacle)) fail(`${file}: obstacle ${JSON.stringify(obstacle)} is out of bounds`);
     if (!allowedObstacles.has(obstacle.kind)) fail(`${file}: invalid obstacle kind ${obstacle.kind}`);
     const obstacleKey = key(obstacle);
-    if (occupied.has(obstacleKey)) fail(`${file}: obstacle overlaps another entity at ${obstacleKey}`);
+    if (occupied.has(obstacleKey)) fail(`${file}: obstacle overlaps an entity at ${obstacleKey}`);
     occupied.add(obstacleKey);
   }
 
-  const sameRow = level.sheep.y === level.barn.y;
-  const sameColumn = level.sheep.x === level.barn.x;
-  if (!sameRow && !sameColumn) fail(`${file}: sheep and barn must share a row or column for MVP`);
-
-  const dx = Math.sign(level.barn.x - level.sheep.x);
-  const dy = Math.sign(level.barn.y - level.sheep.y);
-  const obstacles = new Set((level.obstacles || []).map((obstacle) => key(obstacle)));
-  let x = level.sheep.x + dx;
-  let y = level.sheep.y + dy;
-  while (x !== level.barn.x || y !== level.barn.y) {
-    if (obstacles.has(`${x},${y}`)) fail(`${file}: obstacle blocks solution path at ${x},${y}`);
-    x += dx;
-    y += dy;
+  const result = simulateClear(level);
+  if (!result.completed) {
+    fail(`${file}: no full clear order found; cleared ${result.order.join(", ") || "none"}`);
   }
 }
 

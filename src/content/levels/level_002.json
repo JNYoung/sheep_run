@@ -4,11 +4,16 @@
   "objectiveKey": "objective.default",
   "width": 5,
   "height": 5,
-  "sheep": { "x": 3, "y": 3, "facing": "west" },
-  "barn": { "x": 0, "y": 3, "entryDirection": "east" },
+  "pen": { "x": 2, "y": -1.25, "entryDirection": "south" },
+  "sheep": [
+    { "id": "s1", "x": 4, "y": 3, "facing": "west", "color": "yellow" },
+    { "id": "s2", "x": 2, "y": 3, "facing": "west", "color": "cream" },
+    { "id": "s3", "x": 0, "y": 1, "facing": "east", "color": "pink" },
+    { "id": "s4", "x": 2, "y": 4, "facing": "north", "color": "mint" },
+    { "id": "s5", "x": 3, "y": 0, "facing": "south", "color": "blue" }
+  ],
   "obstacles": [
-    { "x": 4, "y": 1, "kind": "fence" },
-    { "x": 2, "y": 0, "kind": "flower" },
-    { "x": 1, "y": 1, "kind": "hay" }
+    { "x": 4, "y": 0, "kind": "tree" },
+    { "x": 1, "y": 4, "kind": "flower" }
   ]
 }
