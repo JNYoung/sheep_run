@@ -1,6 +1,6 @@
 export type Direction = "north" | "east" | "south" | "west";
 
-export type TapTarget = "none" | "board" | "sheep" | "barn" | "obstacle";
+export type TapTarget = "none" | "board" | "sheep" | "pen" | "obstacle";
 
 export type GamePhase = "menu" | "ready" | "moving" | "won" | "failed";
 
@@ -10,15 +10,17 @@ export interface GridCoord {
 }
 
 export interface SheepDefinition extends GridCoord {
+  id: string;
   facing: Direction;
+  color?: "cream" | "pink" | "mint" | "blue" | "yellow";
 }
 
-export interface BarnDefinition extends GridCoord {
+export interface SheepPenDefinition extends GridCoord {
   entryDirection: Direction;
 }
 
 export interface ObstacleDefinition extends GridCoord {
-  kind: "fence" | "hay" | "flower";
+  kind: "fence" | "hay" | "flower" | "tree";
 }
 
 export interface LevelDefinition {
@@ -27,23 +29,28 @@ export interface LevelDefinition {
   objectiveKey: string;
   width: number;
   height: number;
-  sheep: SheepDefinition;
-  barn: BarnDefinition;
+  sheep: SheepDefinition[];
+  pen: SheepPenDefinition;
   obstacles: ObstacleDefinition[];
 }
 
 export interface TapIntent {
   target: TapTarget;
   coord: GridCoord | null;
+  sheepId?: string;
 }
 
 export interface RuleResult {
   outcome: "win" | "fail";
   reasonKey: string;
   path: GridCoord[];
+  sheepId?: string;
 }
 
 export interface MoveState {
+  sheepId: string;
+  from: GridCoord;
+  facing: Direction;
   startedAt: number;
   path: GridCoord[];
   msPerTile: number;
@@ -52,8 +59,7 @@ export interface MoveState {
 export interface GameViewState {
   phase: GamePhase;
   level: LevelDefinition;
-  sheepCoord: GridCoord;
-  sheepFacing: Direction;
+  sheep: SheepDefinition[];
   move: MoveState | null;
   feedback: FeedbackState | null;
   now: number;

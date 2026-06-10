@@ -1,73 +1,93 @@
-import type { Direction, GridCoord, LevelDefinition, RuleResult, TapIntent } from "./types";
+import type { Direction, GridCoord, LevelDefinition, RuleResult, SheepDefinition, TapIntent } from "./types";
 
-export function evaluateTap(level: LevelDefinition, tap: TapIntent): RuleResult {
+const directionDelta: Record<Direction, GridCoord> = {
+  north: { x: 0, y: -1 },
+  east: { x: 1, y: 0 },
+  south: { x: 0, y: 1 },
+  west: { x: -1, y: 0 },
+};
+
+export function evaluateTap(level: LevelDefinition, sheep: SheepDefinition[], tap: TapIntent): RuleResult {
   if (tap.target === "none" || !tap.coord) {
     return fail("fail.missed");
   }
 
-  if (tap.target !== "sheep") {
+  if (tap.target !== "sheep" || !tap.sheepId) {
     return fail("fail.wrongTarget");
   }
 
-  if (!sameCoord(tap.coord, level.sheep)) {
+  const selectedSheep = sheep.find((candidate) => candidate.id === tap.sheepId);
+  if (!selectedSheep || !sameCoord(selectedSheep, tap.coord)) {
     return fail("fail.wrongTarget");
   }
 
-  const path = buildPathToBarn(level);
-  if (path.length === 0) {
-    return fail("fail.notAligned");
+  const path = buildEscapePath(level, selectedSheep, sheep);
+  if (path.blocker === "sheep") {
+    return {
+      outcome: "fail",
+      reasonKey: "fail.blockedBySheep",
+      path: path.path,
+      sheepId: selectedSheep.id,
+    };
   }
 
-  const blockers = new Set(level.obstacles.map((obstacle) => coordKey(obstacle)));
-  for (let index = 0; index < path.length - 1; index += 1) {
-    if (blockers.has(coordKey(path[index]))) {
-      return {
-        outcome: "fail",
-        reasonKey: "fail.blocked",
-        path,
-      };
-    }
+  if (path.blocker === "obstacle") {
+    return {
+      outcome: "fail",
+      reasonKey: "fail.blockedByObstacle",
+      path: path.path,
+      sheepId: selectedSheep.id,
+    };
   }
 
   return {
     outcome: "win",
-    reasonKey: "result.win.body",
-    path,
+    reasonKey: "status.sheepEntered",
+    path: path.path,
+    sheepId: selectedSheep.id,
   };
 }
 
-export function buildPathToBarn(level: LevelDefinition): GridCoord[] {
-  const sheep = level.sheep;
-  const barn = level.barn;
-  const dx = Math.sign(barn.x - sheep.x);
-  const dy = Math.sign(barn.y - sheep.y);
-
-  if ((dx !== 0 && dy !== 0) || (dx === 0 && dy === 0)) {
-    return [];
-  }
-
+export function buildEscapePath(
+  level: LevelDefinition,
+  selectedSheep: SheepDefinition,
+  sheep: SheepDefinition[],
+): { blocker: "none" | "sheep" | "obstacle"; path: GridCoord[] } {
+  const delta = directionDelta[selectedSheep.facing];
   const path: GridCoord[] = [];
-  let x = sheep.x + dx;
-  let y = sheep.y + dy;
+  const obstacleKeys = new Set(level.obstacles.map((obstacle) => coordKey(obstacle)));
+  const sheepKeys = new Set(
+    sheep
+      .filter((candidate) => candidate.id !== selectedSheep.id)
+      .map((candidate) => coordKey(candidate)),
+  );
+
+  let coord = {
+    x: selectedSheep.x + delta.x,
+    y: selectedSheep.y + delta.y,
+  };
   let guard = level.width * level.height + 4;
 
-  while (guard > 0) {
-    const coord = { x, y };
-    if (!inBounds(level, coord)) {
-      return [];
+  while (guard > 0 && inBounds(level, coord)) {
+    path.push({ ...coord });
+    if (sheepKeys.has(coordKey(coord))) {
+      return { blocker: "sheep", path };
     }
 
-    path.push(coord);
-    if (sameCoord(coord, barn)) {
-      return path;
+    if (obstacleKeys.has(coordKey(coord))) {
+      return { blocker: "obstacle", path };
     }
 
-    x += dx;
-    y += dy;
+    coord = {
+      x: coord.x + delta.x,
+      y: coord.y + delta.y,
+    };
     guard -= 1;
   }
 
-  return [];
+  path.push({ ...coord });
+  path.push({ x: level.pen.x, y: level.pen.y });
+  return { blocker: "none", path };
 }
 
 export function directionBetween(from: GridCoord, to: GridCoord): Direction {

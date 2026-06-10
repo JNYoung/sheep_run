@@ -2,14 +2,21 @@
   "id": "level_005",
   "titleKey": "level.005.title",
   "objectiveKey": "objective.default",
-  "width": 6,
+  "width": 7,
   "height": 6,
-  "sheep": { "x": 4, "y": 2, "facing": "west" },
-  "barn": { "x": 0, "y": 2, "entryDirection": "east" },
+  "pen": { "x": 3, "y": -1.25, "entryDirection": "south" },
+  "sheep": [
+    { "id": "s1", "x": 6, "y": 2, "facing": "west", "color": "pink" },
+    { "id": "s2", "x": 4, "y": 2, "facing": "west", "color": "cream" },
+    { "id": "s3", "x": 2, "y": 2, "facing": "north", "color": "blue" },
+    { "id": "s4", "x": 3, "y": 5, "facing": "north", "color": "mint" },
+    { "id": "s5", "x": 3, "y": 3, "facing": "north", "color": "yellow" },
+    { "id": "s6", "x": 0, "y": 0, "facing": "south", "color": "cream" },
+    { "id": "s7", "x": 0, "y": 4, "facing": "east", "color": "pink" }
+  ],
   "obstacles": [
-    { "x": 2, "y": 4, "kind": "hay" },
-    { "x": 5, "y": 0, "kind": "fence" },
+    { "x": 6, "y": 0, "kind": "tree" },
     { "x": 1, "y": 5, "kind": "flower" },
-    { "x": 3, "y": 0, "kind": "flower" }
+    { "x": 5, "y": 5, "kind": "hay" }
   ]
 }
