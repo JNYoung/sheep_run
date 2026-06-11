@@ -4,8 +4,8 @@
   "objectiveKey": "objective.intermediate",
   "width": 6,
   "height": 6,
-  "difficulty": 13,
-  "recommendedMoves": 22,
+  "difficulty": 11,
+  "recommendedMoves": 23,
   "generatedSeed": 1088720142,
   "pen": {
     "x": 2.5,
@@ -15,179 +15,181 @@
   "sheep": [
     {
       "id": "s001",
-      "x": 3,
-      "y": 3,
-      "facing": "south",
+      "x": 2,
+      "y": 0,
+      "facing": "north",
       "color": "pink"
     },
     {
       "id": "s002",
-      "x": 2,
-      "y": 1,
+      "x": 4,
+      "y": 2,
       "facing": "north",
-      "color": "mint"
+      "color": "pink"
     },
     {
       "id": "s003",
-      "x": 0,
+      "x": 2,
       "y": 2,
       "facing": "north",
-      "color": "pink"
+      "color": "blue"
     },
     {
       "id": "s004",
-      "x": 0,
-      "y": 0,
-      "facing": "north",
-      "color": "yellow"
+      "x": 1,
+      "y": 5,
+      "facing": "south",
+      "color": "mint"
     },
     {
       "id": "s005",
-      "x": 1,
-      "y": 2,
+      "x": 0,
+      "y": 0,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s006",
+      "x": 5,
+      "y": 3,
       "facing": "south",
       "color": "cream"
     },
     {
-      "id": "s006",
+      "id": "s007",
       "x": 2,
-      "y": 0,
+      "y": 1,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s008",
+      "x": 0,
+      "y": 2,
       "facing": "north",
       "color": "pink"
     },
     {
-      "id": "s007",
-      "x": 5,
+      "id": "s009",
+      "x": 3,
+      "y": 2,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s010",
+      "x": 1,
       "y": 3,
       "facing": "south",
       "color": "yellow"
     },
     {
-      "id": "s008",
+      "id": "s011",
       "x": 5,
-      "y": 2,
-      "facing": "south",
-      "color": "cream"
-    },
-    {
-      "id": "s009",
-      "x": 4,
-      "y": 2,
-      "facing": "north",
-      "color": "cream"
-    },
-    {
-      "id": "s010",
-      "x": 5,
-      "y": 4,
+      "y": 5,
       "facing": "south",
       "color": "blue"
     },
     {
-      "id": "s011",
+      "id": "s012",
       "x": 4,
       "y": 1,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s013",
+      "x": 5,
+      "y": 4,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s014",
+      "x": 4,
+      "y": 0,
       "facing": "north",
       "color": "yellow"
     },
     {
-      "id": "s012",
-      "x": 1,
-      "y": 5,
-      "facing": "south",
-      "color": "mint"
-    },
-    {
-      "id": "s013",
-      "x": 4,
-      "y": 0,
-      "facing": "north",
-      "color": "blue"
-    },
-    {
-      "id": "s014",
-      "x": 2,
-      "y": 2,
-      "facing": "north",
-      "color": "blue"
-    },
-    {
       "id": "s015",
-      "x": 3,
-      "y": 4,
-      "facing": "south",
-      "color": "cream"
+      "x": 2,
+      "y": 3,
+      "facing": "north",
+      "color": "yellow"
     },
     {
       "id": "s016",
+      "x": 3,
+      "y": 4,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s017",
       "x": 0,
       "y": 1,
       "facing": "north",
       "color": "cream"
     },
     {
-      "id": "s017",
+      "id": "s018",
       "x": 1,
-      "y": 3,
+      "y": 2,
       "facing": "south",
-      "color": "yellow"
+      "color": "cream"
     },
     {
-      "id": "s018",
+      "id": "s019",
       "x": 3,
-      "y": 2,
+      "y": 3,
       "facing": "south",
       "color": "mint"
     },
     {
-      "id": "s019",
-      "x": 4,
-      "y": 3,
-      "facing": "north",
+      "id": "s020",
+      "x": 5,
+      "y": 2,
+      "facing": "south",
       "color": "pink"
     },
     {
-      "id": "s020",
+      "id": "s021",
       "x": 1,
       "y": 4,
       "facing": "south",
       "color": "blue"
     },
     {
-      "id": "s021",
+      "id": "s022",
       "x": 3,
       "y": 5,
       "facing": "south",
-      "color": "yellow"
+      "color": "cream"
     },
     {
-      "id": "s022",
-      "x": 5,
-      "y": 5,
-      "facing": "south",
+      "id": "s023",
+      "x": 4,
+      "y": 3,
+      "facing": "north",
       "color": "mint"
     }
   ],
   "obstacles": [
     {
       "x": 2,
-      "y": 4,
-      "kind": "fence"
-    },
-    {
-      "x": 5,
-      "y": 1,
-      "kind": "hay"
-    },
-    {
-      "x": 2,
-      "y": 3,
+      "y": 5,
       "kind": "tree"
     },
     {
       "x": 0,
-      "y": 5,
-      "kind": "fence"
+      "y": 4,
+      "kind": "tree"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "kind": "flower"
     }
   ]
 }

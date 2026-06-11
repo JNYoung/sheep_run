@@ -4,8 +4,8 @@
   "objectiveKey": "objective.beginner",
   "width": 5,
   "height": 5,
-  "difficulty": 6,
-  "recommendedMoves": 14,
+  "difficulty": 4,
+  "recommendedMoves": 8,
   "generatedSeed": 3733564772,
   "pen": {
     "x": 2,
@@ -15,113 +15,60 @@
   "sheep": [
     {
       "id": "s001",
-      "x": 2,
-      "y": 2,
+      "x": 0,
+      "y": 4,
       "facing": "west",
-      "color": "mint"
+      "color": "pink"
     },
     {
       "id": "s002",
       "x": 4,
       "y": 3,
       "facing": "east",
-      "color": "blue"
+      "color": "yellow"
     },
     {
       "id": "s003",
-      "x": 1,
+      "x": 0,
       "y": 2,
       "facing": "west",
-      "color": "pink"
+      "color": "blue"
     },
     {
       "id": "s004",
-      "x": 0,
-      "y": 4,
+      "x": 1,
+      "y": 0,
       "facing": "west",
       "color": "pink"
     },
     {
       "id": "s005",
-      "x": 4,
-      "y": 1,
-      "facing": "east",
-      "color": "blue"
+      "x": 1,
+      "y": 4,
+      "facing": "west",
+      "color": "mint"
     },
     {
       "id": "s006",
-      "x": 2,
-      "y": 3,
-      "facing": "east",
+      "x": 0,
+      "y": 0,
+      "facing": "west",
       "color": "cream"
     },
     {
       "id": "s007",
-      "x": 1,
-      "y": 4,
-      "facing": "west",
+      "x": 4,
+      "y": 1,
+      "facing": "east",
       "color": "mint"
     },
     {
       "id": "s008",
-      "x": 2,
-      "y": 4,
-      "facing": "west",
-      "color": "blue"
-    },
-    {
-      "id": "s009",
-      "x": 0,
-      "y": 2,
-      "facing": "west",
-      "color": "cream"
-    },
-    {
-      "id": "s010",
-      "x": 2,
-      "y": 0,
-      "facing": "west",
-      "color": "mint"
-    },
-    {
-      "id": "s011",
-      "x": 0,
-      "y": 0,
-      "facing": "west",
-      "color": "cream"
-    },
-    {
-      "id": "s012",
-      "x": 1,
-      "y": 0,
-      "facing": "west",
-      "color": "pink"
-    },
-    {
-      "id": "s013",
-      "x": 3,
-      "y": 1,
-      "facing": "east",
-      "color": "yellow"
-    },
-    {
-      "id": "s014",
       "x": 3,
       "y": 3,
       "facing": "east",
-      "color": "yellow"
+      "color": "cream"
     }
   ],
-  "obstacles": [
-    {
-      "x": 4,
-      "y": 0,
-      "kind": "fence"
-    },
-    {
-      "x": 0,
-      "y": 1,
-      "kind": "fence"
-    }
-  ]
+  "obstacles": []
 }

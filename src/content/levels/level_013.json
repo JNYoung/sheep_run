@@ -4,8 +4,8 @@
   "objectiveKey": "objective.intermediate",
   "width": 6,
   "height": 6,
-  "difficulty": 11,
-  "recommendedMoves": 21,
+  "difficulty": 8,
+  "recommendedMoves": 18,
   "generatedSeed": 3727867995,
   "pen": {
     "x": 2.5,
@@ -16,165 +16,139 @@
     {
       "id": "s001",
       "x": 1,
-      "y": 3,
-      "facing": "south",
-      "color": "cream"
-    },
-    {
-      "id": "s002",
-      "x": 2,
-      "y": 3,
-      "facing": "north",
-      "color": "yellow"
-    },
-    {
-      "id": "s003",
-      "x": 1,
       "y": 5,
       "facing": "south",
-      "color": "blue"
-    },
-    {
-      "id": "s004",
-      "x": 0,
-      "y": 3,
-      "facing": "north",
       "color": "mint"
     },
     {
-      "id": "s005",
+      "id": "s002",
+      "x": 5,
+      "y": 3,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s003",
       "x": 0,
       "y": 0,
       "facing": "north",
       "color": "yellow"
     },
     {
-      "id": "s006",
-      "x": 0,
+      "id": "s004",
+      "x": 2,
       "y": 1,
       "facing": "north",
-      "color": "cream"
+      "color": "pink"
+    },
+    {
+      "id": "s005",
+      "x": 4,
+      "y": 1,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s006",
+      "x": 3,
+      "y": 5,
+      "facing": "south",
+      "color": "blue"
     },
     {
       "id": "s007",
       "x": 5,
+      "y": 5,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s008",
+      "x": 1,
       "y": 4,
       "facing": "south",
       "color": "blue"
     },
     {
-      "id": "s008",
-      "x": 5,
+      "id": "s009",
+      "x": 1,
       "y": 3,
       "facing": "south",
       "color": "yellow"
     },
     {
-      "id": "s009",
-      "x": 2,
-      "y": 2,
-      "facing": "north",
-      "color": "blue"
-    },
-    {
       "id": "s010",
-      "x": 4,
-      "y": 2,
+      "x": 2,
+      "y": 0,
       "facing": "north",
       "color": "cream"
     },
     {
       "id": "s011",
-      "x": 1,
-      "y": 4,
-      "facing": "south",
-      "color": "yellow"
+      "x": 0,
+      "y": 1,
+      "facing": "north",
+      "color": "cream"
     },
     {
       "id": "s012",
       "x": 2,
-      "y": 0,
-      "facing": "north",
-      "color": "pink"
-    },
-    {
-      "id": "s013",
-      "x": 2,
-      "y": 1,
+      "y": 2,
       "facing": "north",
       "color": "mint"
     },
     {
-      "id": "s014",
-      "x": 4,
-      "y": 1,
-      "facing": "north",
-      "color": "yellow"
-    },
-    {
-      "id": "s015",
-      "x": 3,
-      "y": 5,
-      "facing": "south",
-      "color": "cream"
-    },
-    {
-      "id": "s016",
+      "id": "s013",
       "x": 0,
       "y": 2,
       "facing": "north",
       "color": "pink"
     },
     {
+      "id": "s014",
+      "x": 4,
+      "y": 2,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s015",
+      "x": 3,
+      "y": 4,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s016",
+      "x": 3,
+      "y": 3,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
       "id": "s017",
       "x": 4,
-      "y": 3,
+      "y": 0,
       "facing": "north",
       "color": "pink"
     },
     {
       "id": "s018",
-      "x": 3,
+      "x": 5,
       "y": 4,
       "facing": "south",
-      "color": "pink"
-    },
-    {
-      "id": "s019",
-      "x": 3,
-      "y": 3,
-      "facing": "south",
-      "color": "mint"
-    },
-    {
-      "id": "s020",
-      "x": 4,
-      "y": 0,
-      "facing": "north",
-      "color": "blue"
-    },
-    {
-      "id": "s021",
-      "x": 5,
-      "y": 5,
-      "facing": "south",
-      "color": "mint"
+      "color": "cream"
     }
   ],
   "obstacles": [
     {
-      "x": 5,
-      "y": 1,
-      "kind": "tree"
+      "x": 4,
+      "y": 4,
+      "kind": "hay"
     },
     {
       "x": 2,
-      "y": 5,
-      "kind": "tree"
-    },
-    {
-      "x": 1,
-      "y": 1,
+      "y": 3,
       "kind": "hay"
     }
   ]

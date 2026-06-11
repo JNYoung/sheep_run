@@ -4,7 +4,7 @@
   "objectiveKey": "objective.beginner",
   "width": 5,
   "height": 5,
-  "difficulty": 5,
+  "difficulty": 2,
   "recommendedMoves": 4,
   "generatedSeed": 4245456706,
   "pen": {
@@ -42,11 +42,5 @@
       "color": "cream"
     }
   ],
-  "obstacles": [
-    {
-      "x": 4,
-      "y": 4,
-      "kind": "hay"
-    }
-  ]
+  "obstacles": []
 }

@@ -106,10 +106,7 @@ function validateLevel(file) {
   highestBoardSize = Math.max(highestBoardSize, level.width, level.height);
 
   const levelNumber = Number(level.id?.replace("level_", ""));
-  if (levelNumber === 2 && level.sheep.length < 12) {
-    fail(`${file}: level 2 must jump to at least 12 sheep`);
-  }
-  if (levelNumber > 10 && levelNumber % 10 === 1) {
+  if (levelNumber > 20 && levelNumber % 10 === 1) {
     const previousFile = `level_${String(levelNumber - 1).padStart(3, "0")}.json`;
     const previousLevel = JSON.parse(fs.readFileSync(path.join(levelsDir, previousFile), "utf8"));
     if (level.sheep.length - previousLevel.sheep.length < 4) {
