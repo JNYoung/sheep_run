@@ -1,0 +1,1091 @@
+{
+  "id": "level_134",
+  "titleKey": "level.134.title",
+  "objectiveKey": "objective.expert",
+  "width": 16,
+  "height": 16,
+  "difficulty": 67,
+  "recommendedMoves": 141,
+  "generatedSeed": 1815577601,
+  "pen": {
+    "x": 7.5,
+    "y": -1.25,
+    "entryDirection": "south"
+  },
+  "sheep": [
+    {
+      "id": "s001",
+      "x": 8,
+      "y": 3,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s002",
+      "x": 15,
+      "y": 8,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s003",
+      "x": 12,
+      "y": 5,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s004",
+      "x": 7,
+      "y": 9,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s005",
+      "x": 2,
+      "y": 5,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s006",
+      "x": 11,
+      "y": 10,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s007",
+      "x": 4,
+      "y": 1,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s008",
+      "x": 12,
+      "y": 8,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s009",
+      "x": 9,
+      "y": 8,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s010",
+      "x": 5,
+      "y": 11,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s011",
+      "x": 8,
+      "y": 8,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s012",
+      "x": 4,
+      "y": 3,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s013",
+      "x": 10,
+      "y": 2,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s014",
+      "x": 2,
+      "y": 0,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s015",
+      "x": 13,
+      "y": 15,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s016",
+      "x": 9,
+      "y": 12,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s017",
+      "x": 4,
+      "y": 5,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s018",
+      "x": 4,
+      "y": 8,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s019",
+      "x": 0,
+      "y": 4,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s020",
+      "x": 14,
+      "y": 6,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s021",
+      "x": 4,
+      "y": 0,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s022",
+      "x": 9,
+      "y": 9,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s023",
+      "x": 4,
+      "y": 6,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s024",
+      "x": 9,
+      "y": 15,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s025",
+      "x": 9,
+      "y": 11,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s026",
+      "x": 5,
+      "y": 14,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s027",
+      "x": 7,
+      "y": 13,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s028",
+      "x": 8,
+      "y": 2,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s029",
+      "x": 13,
+      "y": 12,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s030",
+      "x": 1,
+      "y": 9,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s031",
+      "x": 3,
+      "y": 12,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s032",
+      "x": 14,
+      "y": 3,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s033",
+      "x": 6,
+      "y": 7,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s034",
+      "x": 1,
+      "y": 13,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s035",
+      "x": 5,
+      "y": 15,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s036",
+      "x": 6,
+      "y": 4,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s037",
+      "x": 13,
+      "y": 11,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s038",
+      "x": 3,
+      "y": 7,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s039",
+      "x": 8,
+      "y": 0,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s040",
+      "x": 12,
+      "y": 0,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s041",
+      "x": 15,
+      "y": 7,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s042",
+      "x": 11,
+      "y": 9,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s043",
+      "x": 12,
+      "y": 1,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s044",
+      "x": 1,
+      "y": 10,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s045",
+      "x": 6,
+      "y": 8,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s046",
+      "x": 2,
+      "y": 2,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s047",
+      "x": 3,
+      "y": 11,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s048",
+      "x": 10,
+      "y": 7,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s049",
+      "x": 13,
+      "y": 13,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s050",
+      "x": 13,
+      "y": 7,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s051",
+      "x": 11,
+      "y": 12,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s052",
+      "x": 13,
+      "y": 10,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s053",
+      "x": 8,
+      "y": 7,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s054",
+      "x": 2,
+      "y": 6,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s055",
+      "x": 0,
+      "y": 8,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s056",
+      "x": 5,
+      "y": 8,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s057",
+      "x": 5,
+      "y": 13,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s058",
+      "x": 7,
+      "y": 11,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s059",
+      "x": 6,
+      "y": 6,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s060",
+      "x": 8,
+      "y": 4,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s061",
+      "x": 13,
+      "y": 14,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s062",
+      "x": 9,
+      "y": 13,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s063",
+      "x": 0,
+      "y": 3,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s064",
+      "x": 0,
+      "y": 2,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s065",
+      "x": 10,
+      "y": 5,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s066",
+      "x": 7,
+      "y": 12,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s067",
+      "x": 15,
+      "y": 11,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s068",
+      "x": 0,
+      "y": 1,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s069",
+      "x": 15,
+      "y": 9,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s070",
+      "x": 1,
+      "y": 12,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s071",
+      "x": 6,
+      "y": 3,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s072",
+      "x": 12,
+      "y": 3,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s073",
+      "x": 0,
+      "y": 7,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s074",
+      "x": 8,
+      "y": 6,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s075",
+      "x": 3,
+      "y": 13,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s076",
+      "x": 0,
+      "y": 0,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s077",
+      "x": 1,
+      "y": 14,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s078",
+      "x": 1,
+      "y": 11,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s079",
+      "x": 10,
+      "y": 0,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s080",
+      "x": 14,
+      "y": 2,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s081",
+      "x": 12,
+      "y": 7,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s082",
+      "x": 10,
+      "y": 4,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s083",
+      "x": 13,
+      "y": 9,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s084",
+      "x": 3,
+      "y": 9,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s085",
+      "x": 8,
+      "y": 1,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s086",
+      "x": 0,
+      "y": 5,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s087",
+      "x": 6,
+      "y": 1,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s088",
+      "x": 14,
+      "y": 4,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s089",
+      "x": 14,
+      "y": 8,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s090",
+      "x": 11,
+      "y": 7,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s091",
+      "x": 14,
+      "y": 5,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s092",
+      "x": 3,
+      "y": 10,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s093",
+      "x": 5,
+      "y": 9,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s094",
+      "x": 1,
+      "y": 15,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s095",
+      "x": 3,
+      "y": 8,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s096",
+      "x": 4,
+      "y": 7,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s097",
+      "x": 0,
+      "y": 6,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s098",
+      "x": 14,
+      "y": 1,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s099",
+      "x": 15,
+      "y": 15,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s100",
+      "x": 8,
+      "y": 5,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s101",
+      "x": 11,
+      "y": 14,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s102",
+      "x": 5,
+      "y": 12,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s103",
+      "x": 1,
+      "y": 8,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s104",
+      "x": 9,
+      "y": 14,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s105",
+      "x": 7,
+      "y": 15,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s106",
+      "x": 2,
+      "y": 1,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s107",
+      "x": 3,
+      "y": 14,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s108",
+      "x": 12,
+      "y": 6,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s109",
+      "x": 10,
+      "y": 6,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s110",
+      "x": 7,
+      "y": 8,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s111",
+      "x": 10,
+      "y": 3,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s112",
+      "x": 2,
+      "y": 7,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s113",
+      "x": 14,
+      "y": 0,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s114",
+      "x": 9,
+      "y": 10,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s115",
+      "x": 15,
+      "y": 13,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s116",
+      "x": 15,
+      "y": 14,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s117",
+      "x": 6,
+      "y": 2,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s118",
+      "x": 2,
+      "y": 4,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s119",
+      "x": 11,
+      "y": 15,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s120",
+      "x": 6,
+      "y": 0,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s121",
+      "x": 11,
+      "y": 13,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s122",
+      "x": 15,
+      "y": 12,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s123",
+      "x": 5,
+      "y": 7,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s124",
+      "x": 15,
+      "y": 10,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s125",
+      "x": 12,
+      "y": 4,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s126",
+      "x": 3,
+      "y": 15,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s127",
+      "x": 11,
+      "y": 8,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s128",
+      "x": 9,
+      "y": 7,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s129",
+      "x": 11,
+      "y": 11,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s130",
+      "x": 13,
+      "y": 8,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s131",
+      "x": 12,
+      "y": 2,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s132",
+      "x": 7,
+      "y": 14,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s133",
+      "x": 4,
+      "y": 2,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s134",
+      "x": 14,
+      "y": 7,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s135",
+      "x": 10,
+      "y": 1,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s136",
+      "x": 5,
+      "y": 10,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s137",
+      "x": 6,
+      "y": 5,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s138",
+      "x": 7,
+      "y": 7,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s139",
+      "x": 2,
+      "y": 3,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s140",
+      "x": 4,
+      "y": 4,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s141",
+      "x": 7,
+      "y": 10,
+      "facing": "south",
+      "color": "pink"
+    }
+  ],
+  "obstacles": [
+    {
+      "x": 0,
+      "y": 14,
+      "kind": "fence"
+    },
+    {
+      "x": 4,
+      "y": 14,
+      "kind": "hay"
+    },
+    {
+      "x": 8,
+      "y": 14,
+      "kind": "flower"
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "kind": "tree"
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "kind": "hay"
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "kind": "tree"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "kind": "flower"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "kind": "flower"
+    },
+    {
+      "x": 15,
+      "y": 4,
+      "kind": "tree"
+    },
+    {
+      "x": 13,
+      "y": 2,
+      "kind": "fence"
+    },
+    {
+      "x": 2,
+      "y": 14,
+      "kind": "fence"
+    },
+    {
+      "x": 13,
+      "y": 3,
+      "kind": "hay"
+    },
+    {
+      "x": 13,
+      "y": 6,
+      "kind": "tree"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "kind": "fence"
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "kind": "flower"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "kind": "fence"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "kind": "tree"
+    }
+  ]
+}

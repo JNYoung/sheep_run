@@ -3,8 +3,10 @@ import path from "node:path";
 
 const root = process.cwd();
 const levelsDir = path.join(root, "src", "content", "levels");
+const expectedLevelCount = 200;
 const allowedDirections = new Set(["north", "east", "south", "west"]);
 const allowedObstacles = new Set(["fence", "hay", "flower", "tree"]);
+const allowedColors = new Set(["cream", "pink", "mint", "blue", "yellow", undefined]);
 const deltas = {
   north: { x: 0, y: -1 },
   east: { x: 1, y: 0 },
@@ -13,6 +15,10 @@ const deltas = {
 };
 
 let failed = false;
+let previousDifficulty = 0;
+let highestSheepCount = 0;
+let highestObstacleCount = 0;
+let highestBoardSize = 0;
 
 function fail(message) {
   failed = true;
@@ -84,9 +90,32 @@ function validateLevel(file) {
   if (!level.titleKey || !level.objectiveKey) fail(`${file}: missing localization keys`);
   if (!Number.isInteger(level.width) || !Number.isInteger(level.height)) fail(`${file}: width/height must be integers`);
   if (level.width < 4 || level.height < 4) fail(`${file}: board must be at least 4x4`);
+  if (level.width > 16 || level.height > 16) fail(`${file}: board must stay within mobile 16x16 budget`);
   if (!level.pen || typeof level.pen.x !== "number" || typeof level.pen.y !== "number") fail(`${file}: missing pen`);
   if (!allowedDirections.has(level.pen?.entryDirection)) fail(`${file}: invalid pen entryDirection`);
   if (!Array.isArray(level.sheep) || level.sheep.length < 3) fail(`${file}: expected at least 3 sheep`);
+  if (!Number.isInteger(level.difficulty) || level.difficulty < 1 || level.difficulty > 100) {
+    fail(`${file}: difficulty must be an integer from 1 to 100`);
+  }
+  if (level.difficulty < previousDifficulty) {
+    fail(`${file}: difficulty regressed from ${previousDifficulty} to ${level.difficulty}`);
+  }
+  previousDifficulty = level.difficulty;
+  highestSheepCount = Math.max(highestSheepCount, level.sheep?.length || 0);
+  highestObstacleCount = Math.max(highestObstacleCount, level.obstacles?.length || 0);
+  highestBoardSize = Math.max(highestBoardSize, level.width, level.height);
+
+  const levelNumber = Number(level.id?.replace("level_", ""));
+  if (levelNumber === 2 && level.sheep.length < 12) {
+    fail(`${file}: level 2 must jump to at least 12 sheep`);
+  }
+  if (levelNumber > 10 && levelNumber % 10 === 1) {
+    const previousFile = `level_${String(levelNumber - 1).padStart(3, "0")}.json`;
+    const previousLevel = JSON.parse(fs.readFileSync(path.join(levelsDir, previousFile), "utf8"));
+    if (level.sheep.length - previousLevel.sheep.length < 4) {
+      fail(`${file}: every 10-level stage should jump by at least 4 sheep`);
+    }
+  }
 
   const occupied = new Set();
   const ids = new Set();
@@ -96,6 +125,7 @@ function validateLevel(file) {
     ids.add(sheep.id);
     if (!inBounds(level, sheep)) fail(`${file}: sheep ${sheep.id} is out of bounds`);
     if (!allowedDirections.has(sheep.facing)) fail(`${file}: invalid sheep facing for ${sheep.id}`);
+    if (!allowedColors.has(sheep.color)) fail(`${file}: invalid sheep color for ${sheep.id}`);
     const sheepKey = key(sheep);
     if (occupied.has(sheepKey)) fail(`${file}: sheep overlap at ${sheepKey}`);
     occupied.add(sheepKey);
@@ -119,13 +149,26 @@ const files = fs.readdirSync(levelsDir).filter((file) => file.endsWith(".json"))
 if (files.length === 0) {
   fail("no level files found");
 }
+if (files.length !== expectedLevelCount) {
+  fail(`expected ${expectedLevelCount} levels, found ${files.length}`);
+}
 
 for (const file of files) {
   validateLevel(file);
+}
+
+if (highestSheepCount < 130) {
+  fail(`difficulty ceiling is too low; max sheep count is ${highestSheepCount}`);
+}
+if (highestObstacleCount < 22) {
+  fail(`difficulty ceiling is too low; max obstacle count is ${highestObstacleCount}`);
+}
+if (highestBoardSize < 14) {
+  fail(`board ceiling is too low; max board dimension is ${highestBoardSize}`);
 }
 
 if (failed) {
   process.exit(1);
 }
 
-console.log(`validated ${files.length} level(s)`);
+console.log(`validated ${files.length} level(s); max board=${highestBoardSize}x${highestBoardSize}; max sheep=${highestSheepCount}; max obstacles=${highestObstacleCount}`);

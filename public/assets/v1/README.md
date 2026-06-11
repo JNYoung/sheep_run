@@ -9,47 +9,47 @@ This folder contains the first reviewable split asset pack generated from the ap
 ## Final transparent assets
 
 - `sprites/sheep/`
-  - `sheep_idle_south.png`
-  - `sheep_idle_east.png`
-  - `sheep_idle_north.png`
-  - `sheep_idle_west.png`
-  - `sheep_run_south.png`
-  - `sheep_run_east.png`
-  - `sheep_run_north.png`
-  - `sheep_run_west.png`
+  - `sheep_idle_south.webp`
+  - `sheep_idle_east.webp`
+  - `sheep_idle_north.webp`
+  - `sheep_idle_west.webp`
+  - `sheep_run_south.webp`
+  - `sheep_run_east.webp`
+  - `sheep_run_north.webp`
+  - `sheep_run_west.webp`
 - `structures/`
-  - `barn.png`
+  - `barn.webp`
 - `obstacles/`
-  - `hay_bale.png`
-  - `fence_segment.png`
-  - `shrub_flower.png`
-  - `pasture_tree.png`
-  - `gate_segment.png`
-  - `hedge.png`
-  - `flower_patch.png`
-  - `hay_bucket.png`
+  - `hay_bale.webp`
+  - `fence_segment.webp`
+  - `shrub_flower.webp`
+  - `pasture_tree.webp`
+  - `gate_segment.webp`
+  - `hedge.webp`
+  - `flower_patch.webp`
+  - `hay_bucket.webp`
 - `scene/`
-  - `grass_tile_light.png`
-  - `grass_tile_dark.png`
-  - `board_edge_corner.png`
-  - `grass_corner_flowers.png`
-  - `contact_shadow.png`
-  - `wrong_tap_ripple.png`
-  - `direction_arrow.png`
-  - `success_sparkle.png`
+  - `grass_tile_light.webp`
+  - `grass_tile_dark.webp`
+  - `board_edge_corner.webp`
+  - `grass_corner_flowers.webp`
+  - `contact_shadow.webp`
+  - `wrong_tap_ripple.webp`
+  - `direction_arrow.webp`
+  - `success_sparkle.webp`
 - `ui/`
-  - `objective_panel.png`
-  - `status_chip.png`
-  - `menu_card.png`
-  - `primary_play_button.png`
-  - `secondary_language_button.png`
-  - `warning_retry_button.png`
-  - `restart_icon_button.png`
-  - `sound_icon_button.png`
-  - `star_badge.png`
-  - `crown_badge.png`
-  - `level_tile_button.png`
-  - `globe_icon.png`
+  - `objective_panel.webp`
+  - `status_chip.webp`
+  - `menu_card.webp`
+  - `primary_play_button.webp`
+  - `secondary_language_button.webp`
+  - `warning_retry_button.webp`
+  - `restart_icon_button.webp`
+  - `sound_icon_button.webp`
+  - `star_badge.webp`
+  - `crown_badge.webp`
+  - `level_tile_button.webp`
+  - `globe_icon.webp`
 
 ## Source sheets
 
@@ -57,6 +57,6 @@ This folder contains the first reviewable split asset pack generated from the ap
 
 ## Notes
 
-- All final sliced assets are RGBA PNG files.
-- The sheep directions are readable front/back/left/right views. The current pack includes one idle and one run/step pose per direction.
-- `scene/contact_shadow.png` and `scene/success_sparkle.png` include soft semi-transparent pixels and may need a dedicated effects pass if sharper alpha is required.
+- All final sliced runtime assets are transparent WebP files generated from the review PNG slices.
+- Direction is reinforced in canvas by a high-contrast arrow badge because the sheep silhouettes read strongest as left/right at small sizes.
+- `scene/contact_shadow.webp` and `scene/success_sparkle.webp` include soft semi-transparent pixels and may need a dedicated effects pass if sharper alpha is required.

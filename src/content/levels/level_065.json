@@ -1,0 +1,512 @@
+{
+  "id": "level_065",
+  "titleKey": "level.065.title",
+  "objectiveKey": "objective.advanced",
+  "width": 11,
+  "height": 11,
+  "difficulty": 35,
+  "recommendedMoves": 64,
+  "generatedSeed": 4149895199,
+  "pen": {
+    "x": 5,
+    "y": -1.25,
+    "entryDirection": "south"
+  },
+  "sheep": [
+    {
+      "id": "s001",
+      "x": 3,
+      "y": 4,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s002",
+      "x": 1,
+      "y": 0,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s003",
+      "x": 6,
+      "y": 9,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s004",
+      "x": 10,
+      "y": 9,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s005",
+      "x": 4,
+      "y": 0,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s006",
+      "x": 7,
+      "y": 7,
+      "facing": "east",
+      "color": "cream"
+    },
+    {
+      "id": "s007",
+      "x": 10,
+      "y": 7,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s008",
+      "x": 1,
+      "y": 6,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s009",
+      "x": 7,
+      "y": 5,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s010",
+      "x": 7,
+      "y": 3,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s011",
+      "x": 9,
+      "y": 7,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s012",
+      "x": 4,
+      "y": 10,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s013",
+      "x": 8,
+      "y": 7,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s014",
+      "x": 10,
+      "y": 3,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s015",
+      "x": 6,
+      "y": 7,
+      "facing": "east",
+      "color": "pink"
+    },
+    {
+      "id": "s016",
+      "x": 0,
+      "y": 4,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s017",
+      "x": 0,
+      "y": 8,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s018",
+      "x": 9,
+      "y": 3,
+      "facing": "east",
+      "color": "cream"
+    },
+    {
+      "id": "s019",
+      "x": 1,
+      "y": 10,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s020",
+      "x": 6,
+      "y": 5,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s021",
+      "x": 5,
+      "y": 8,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s022",
+      "x": 3,
+      "y": 0,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s023",
+      "x": 9,
+      "y": 1,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s024",
+      "x": 10,
+      "y": 5,
+      "facing": "east",
+      "color": "cream"
+    },
+    {
+      "id": "s025",
+      "x": 4,
+      "y": 8,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s026",
+      "x": 2,
+      "y": 6,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s027",
+      "x": 7,
+      "y": 9,
+      "facing": "east",
+      "color": "pink"
+    },
+    {
+      "id": "s028",
+      "x": 2,
+      "y": 8,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s029",
+      "x": 5,
+      "y": 0,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s030",
+      "x": 6,
+      "y": 3,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s031",
+      "x": 0,
+      "y": 6,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s032",
+      "x": 5,
+      "y": 3,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s033",
+      "x": 1,
+      "y": 8,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s034",
+      "x": 10,
+      "y": 1,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s035",
+      "x": 0,
+      "y": 2,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s036",
+      "x": 0,
+      "y": 0,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s037",
+      "x": 5,
+      "y": 10,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s038",
+      "x": 2,
+      "y": 0,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s039",
+      "x": 8,
+      "y": 5,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s040",
+      "x": 3,
+      "y": 2,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s041",
+      "x": 3,
+      "y": 10,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s042",
+      "x": 5,
+      "y": 2,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s043",
+      "x": 0,
+      "y": 10,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s044",
+      "x": 3,
+      "y": 6,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s045",
+      "x": 6,
+      "y": 1,
+      "facing": "east",
+      "color": "pink"
+    },
+    {
+      "id": "s046",
+      "x": 5,
+      "y": 5,
+      "facing": "east",
+      "color": "cream"
+    },
+    {
+      "id": "s047",
+      "x": 1,
+      "y": 2,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s048",
+      "x": 7,
+      "y": 1,
+      "facing": "east",
+      "color": "cream"
+    },
+    {
+      "id": "s049",
+      "x": 1,
+      "y": 4,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s050",
+      "x": 5,
+      "y": 9,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s051",
+      "x": 4,
+      "y": 6,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s052",
+      "x": 9,
+      "y": 5,
+      "facing": "east",
+      "color": "pink"
+    },
+    {
+      "id": "s053",
+      "x": 2,
+      "y": 2,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s054",
+      "x": 5,
+      "y": 6,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s055",
+      "x": 4,
+      "y": 2,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s056",
+      "x": 4,
+      "y": 4,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s057",
+      "x": 9,
+      "y": 9,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s058",
+      "x": 8,
+      "y": 1,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s059",
+      "x": 5,
+      "y": 1,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s060",
+      "x": 8,
+      "y": 9,
+      "facing": "east",
+      "color": "cream"
+    },
+    {
+      "id": "s061",
+      "x": 2,
+      "y": 10,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s062",
+      "x": 3,
+      "y": 8,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s063",
+      "x": 8,
+      "y": 3,
+      "facing": "east",
+      "color": "pink"
+    },
+    {
+      "id": "s064",
+      "x": 2,
+      "y": 4,
+      "facing": "west",
+      "color": "mint"
+    }
+  ],
+  "obstacles": [
+    {
+      "x": 3,
+      "y": 3,
+      "kind": "tree"
+    },
+    {
+      "x": 10,
+      "y": 8,
+      "kind": "fence"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "kind": "tree"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "kind": "hay"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "kind": "hay"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "kind": "fence"
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "kind": "tree"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "kind": "flower"
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "kind": "hay"
+    }
+  ]
+}

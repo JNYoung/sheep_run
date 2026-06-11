@@ -1,0 +1,322 @@
+{
+  "id": "level_037",
+  "titleKey": "level.037.title",
+  "objectiveKey": "objective.intermediate",
+  "width": 8,
+  "height": 8,
+  "difficulty": 22,
+  "recommendedMoves": 39,
+  "generatedSeed": 2007801964,
+  "pen": {
+    "x": 3.5,
+    "y": -1.25,
+    "entryDirection": "south"
+  },
+  "sheep": [
+    {
+      "id": "s001",
+      "x": 0,
+      "y": 3,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s002",
+      "x": 0,
+      "y": 1,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s003",
+      "x": 3,
+      "y": 4,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s004",
+      "x": 7,
+      "y": 6,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s005",
+      "x": 5,
+      "y": 6,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s006",
+      "x": 5,
+      "y": 4,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s007",
+      "x": 3,
+      "y": 5,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s008",
+      "x": 4,
+      "y": 1,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s009",
+      "x": 2,
+      "y": 3,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s010",
+      "x": 1,
+      "y": 4,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s011",
+      "x": 6,
+      "y": 4,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s012",
+      "x": 3,
+      "y": 3,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s013",
+      "x": 6,
+      "y": 0,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s014",
+      "x": 1,
+      "y": 3,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s015",
+      "x": 6,
+      "y": 2,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s016",
+      "x": 4,
+      "y": 3,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s017",
+      "x": 4,
+      "y": 2,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s018",
+      "x": 2,
+      "y": 0,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s019",
+      "x": 7,
+      "y": 7,
+      "facing": "south",
+      "color": "mint"
+    },
+    {
+      "id": "s020",
+      "x": 5,
+      "y": 5,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s021",
+      "x": 7,
+      "y": 5,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s022",
+      "x": 0,
+      "y": 4,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s023",
+      "x": 3,
+      "y": 6,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s024",
+      "x": 1,
+      "y": 6,
+      "facing": "south",
+      "color": "yellow"
+    },
+    {
+      "id": "s025",
+      "x": 2,
+      "y": 2,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s026",
+      "x": 2,
+      "y": 4,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s027",
+      "x": 1,
+      "y": 5,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s028",
+      "x": 2,
+      "y": 1,
+      "facing": "north",
+      "color": "yellow"
+    },
+    {
+      "id": "s029",
+      "x": 1,
+      "y": 7,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s030",
+      "x": 0,
+      "y": 2,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s031",
+      "x": 6,
+      "y": 1,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s032",
+      "x": 6,
+      "y": 3,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s033",
+      "x": 0,
+      "y": 0,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s034",
+      "x": 7,
+      "y": 4,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s035",
+      "x": 4,
+      "y": 4,
+      "facing": "north",
+      "color": "mint"
+    },
+    {
+      "id": "s036",
+      "x": 7,
+      "y": 3,
+      "facing": "south",
+      "color": "pink"
+    },
+    {
+      "id": "s037",
+      "x": 5,
+      "y": 7,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s038",
+      "x": 4,
+      "y": 0,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
+      "id": "s039",
+      "x": 3,
+      "y": 7,
+      "facing": "south",
+      "color": "blue"
+    }
+  ],
+  "obstacles": [
+    {
+      "x": 7,
+      "y": 0,
+      "kind": "flower"
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "kind": "tree"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "kind": "fence"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "kind": "fence"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "kind": "fence"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "kind": "tree"
+    }
+  ]
+}

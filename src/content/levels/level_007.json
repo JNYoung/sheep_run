@@ -1,0 +1,134 @@
+{
+  "id": "level_007",
+  "titleKey": "level.007.title",
+  "objectiveKey": "objective.beginner",
+  "width": 5,
+  "height": 5,
+  "difficulty": 8,
+  "recommendedMoves": 15,
+  "generatedSeed": 699422895,
+  "pen": {
+    "x": 2,
+    "y": -1.25,
+    "entryDirection": "south"
+  },
+  "sheep": [
+    {
+      "id": "s001",
+      "x": 0,
+      "y": 4,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s002",
+      "x": 4,
+      "y": 3,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s003",
+      "x": 2,
+      "y": 0,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s004",
+      "x": 0,
+      "y": 0,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s005",
+      "x": 4,
+      "y": 1,
+      "facing": "east",
+      "color": "pink"
+    },
+    {
+      "id": "s006",
+      "x": 3,
+      "y": 3,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s007",
+      "x": 2,
+      "y": 1,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s008",
+      "x": 2,
+      "y": 2,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s009",
+      "x": 3,
+      "y": 1,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s010",
+      "x": 1,
+      "y": 0,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s011",
+      "x": 0,
+      "y": 2,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s012",
+      "x": 2,
+      "y": 3,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s013",
+      "x": 1,
+      "y": 4,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s014",
+      "x": 2,
+      "y": 4,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s015",
+      "x": 1,
+      "y": 2,
+      "facing": "west",
+      "color": "cream"
+    }
+  ],
+  "obstacles": [
+    {
+      "x": 4,
+      "y": 4,
+      "kind": "tree"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "kind": "flower"
+    }
+  ]
+}

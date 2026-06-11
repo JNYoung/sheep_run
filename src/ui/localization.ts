@@ -1,39 +1,234 @@
-export type Locale = "zh-CN" | "en" | "ja";
+export type Locale = "zh-CN" | "zh-TW" | "ja" | "fr" | "de" | "en" | "ar";
 
-const localeOrder: Locale[] = ["zh-CN", "en", "ja"];
+const localeOrder: Locale[] = ["zh-CN", "zh-TW", "ja", "fr", "de", "en", "ar"];
 
-const tables: Record<Locale, Record<string, string>> = {
-  "zh-CN": {
-    "app.title": "赶了个羊",
-    "app.subtitle": "不同朝向的小羊，只有一个糖果羊圈。",
-    "button.start": "开始",
-    "button.retry": "重开",
-    "button.next": "下一关",
-    "button.menu": "菜单",
-    "button.language": "语言",
-    "button.mute": "静音",
-    "button.sound": "声音",
-    "menu.levels": "关卡",
-    "objective.default": "按小羊朝向清路，前方被挡就会失败。",
-    "status.ready": "已入圈 {done}/{total}，选择一只前路畅通的小羊。",
+type TranslationTable = Record<string, string>;
+
+const zhCN: TranslationTable = {
+  "app.title": "赶了个羊",
+  "app.subtitle": "不同朝向的小羊，只有一个糖果羊圈。",
+  "button.start": "开始",
+  "button.retry": "重开",
+  "button.next": "下一关",
+  "button.menu": "菜单",
+  "button.language": "语言",
+  "button.mute": "静音",
+  "button.sound": "声音",
+  "button.rewardRescue": "额外救援笔",
+  "button.pagePrev": "上一页关卡",
+  "button.pageNext": "下一页关卡",
+  "menu.levels": "关卡",
+  "menu.continue": "继续第 {level} 关",
+  "menu.best": "已通关 {done}/{total}",
+  "menu.rewardRescue": "额外救援笔",
+  "menu.rewardHint": "可选奖励，标出几只安全小羊",
+  "objective.default": "按小羊朝向清路，前方被挡就会失败。",
+  "objective.beginner": "先看朝向，点前路畅通的小羊。",
+  "objective.intermediate": "小羊会互相挡路，顺序开始重要。",
+  "objective.advanced": "先找出口，再拆掉挡住长路的小羊。",
+  "objective.expert": "高密度羊群，任何误点都会重开。",
+  "status.ready": "已入圈 {done}/{total}，选择一只前路畅通的小羊。",
+  "status.moving": "小羊跑向羊圈...",
+  "status.won": "所有小羊都进圈了。",
+  "status.failed": "本关失败，重开再试。",
+  "status.sheepEntered": "已入圈 {done}/{total}，继续清掉剩下的小羊。",
+  "status.rescueReady": "救援已开启：{count} 只安全小羊正在闪光。",
+  "status.rescueNone": "这一刻没有安全小羊，先重开观察队形。",
+  "result.win.title": "成功入仓",
+  "result.win.body": "顺序正确，所有小羊都安全进入羊圈。",
+  "result.fail.title": "失败",
+  "fail.wrongTarget": "点错了。本关只能点小羊。",
+  "fail.missed": "点空了。本关点错立即失败。",
+  "fail.blocked": "路线被挡住了。",
+  "fail.blockedBySheep": "前方有别的小羊挡路。",
+  "fail.blockedByObstacle": "前方有树篱或草垛挡路。",
+  "fail.notAligned": "小羊没有正对羊仓。",
+  "level.001.title": "第一只羊",
+  "level.002.title": "羊群突然变多",
+  "level.003.title": "向北回家",
+  "level.004.title": "草坡下行",
+  "level.005.title": "长路入仓",
+  "level.dynamic.title": "第 {level} 关",
+};
+
+const tables: Record<Locale, TranslationTable> = {
+  "zh-CN": zhCN,
+  "zh-TW": {
+    ...zhCN,
+    "app.title": "趕了個羊",
+    "app.subtitle": "不同朝向的小羊，只有一個糖果羊圈。",
+    "button.retry": "重來",
+    "button.rewardRescue": "額外救援筆",
+    "button.pagePrev": "上一頁關卡",
+    "button.pageNext": "下一頁關卡",
+    "menu.best": "已通關 {done}/{total}",
+    "menu.rewardRescue": "額外救援筆",
+    "menu.rewardHint": "可選獎勵，標出幾隻安全小羊",
+    "objective.default": "按小羊朝向清路，前方被擋就會失敗。",
+    "objective.beginner": "先看朝向，點前路暢通的小羊。",
+    "objective.intermediate": "小羊會互相擋路，順序開始重要。",
+    "objective.advanced": "先找出口，再拆掉擋住長路的小羊。",
+    "objective.expert": "高密度羊群，任何誤點都會重來。",
+    "status.ready": "已入圈 {done}/{total}，選擇一隻前路暢通的小羊。",
     "status.moving": "小羊跑向羊圈...",
-    "status.won": "所有小羊都进圈了。",
-    "status.failed": "本关失败，重开再试。",
-    "status.sheepEntered": "已入圈 {done}/{total}，继续清掉剩下的小羊。",
-    "result.win.title": "成功入仓",
-    "result.win.body": "顺序正确，所有小羊都安全进入羊圈。",
-    "result.fail.title": "失败",
-    "fail.wrongTarget": "点错了。本关只能点小羊。",
-    "fail.missed": "点空了。本关点错立即失败。",
-    "fail.blocked": "路线被挡住了。",
-    "fail.blockedBySheep": "前方有别的小羊挡路。",
-    "fail.blockedByObstacle": "前方有树篱或草垛挡路。",
-    "fail.notAligned": "小羊没有正对羊仓。",
-    "level.001.title": "第一只羊",
-    "level.002.title": "回头路",
+    "status.won": "所有小羊都進圈了。",
+    "status.failed": "本關失敗，重來再試。",
+    "status.sheepEntered": "已入圈 {done}/{total}，繼續清掉剩下的小羊。",
+    "status.rescueReady": "救援已開啟：{count} 隻安全小羊正在閃光。",
+    "status.rescueNone": "這一刻沒有安全小羊，先重來觀察隊形。",
+    "result.win.title": "成功入倉",
+    "result.win.body": "順序正確，所有小羊都安全進入羊圈。",
+    "result.fail.title": "失敗",
+    "fail.wrongTarget": "點錯了。本關只能點小羊。",
+    "fail.missed": "點空了。本關點錯立即失敗。",
+    "fail.blocked": "路線被擋住了。",
+    "fail.blockedBySheep": "前方有別的小羊擋路。",
+    "fail.blockedByObstacle": "前方有樹籬或草垛擋路。",
+    "fail.notAligned": "小羊沒有正對羊倉。",
+    "level.001.title": "第一隻羊",
+    "level.002.title": "羊群突然變多",
     "level.003.title": "向北回家",
     "level.004.title": "草坡下行",
-    "level.005.title": "长路入仓"
+    "level.005.title": "長路入倉",
+    "level.dynamic.title": "第 {level} 關",
+  },
+  ja: {
+    "app.title": "ひつじラン",
+    "app.subtitle": "向きの違うひつじたちを、一つのキャンディ牧場へ。",
+    "button.start": "スタート",
+    "button.retry": "リトライ",
+    "button.next": "次へ",
+    "button.menu": "メニュー",
+    "button.language": "言語",
+    "button.mute": "ミュート",
+    "button.sound": "サウンド",
+    "button.rewardRescue": "救援ペン",
+    "button.pagePrev": "前のレベル",
+    "button.pageNext": "次のレベル",
+    "menu.levels": "レベル",
+    "menu.continue": "レベル {level} から再開",
+    "menu.best": "{done}/{total} クリア",
+    "menu.rewardRescue": "救援ペン",
+    "menu.rewardHint": "任意の報酬で安全なひつじを表示",
+    "objective.default": "ひつじの向きに進みます。前が詰まると失敗。",
+    "objective.beginner": "矢印を見て、道が空いたひつじを選ぼう。",
+    "objective.intermediate": "ひつじ同士が道をふさぎます。順番が大切。",
+    "objective.advanced": "出口を探して、長い道の邪魔を外そう。",
+    "objective.expert": "高密度の群れです。ミスすると最初から。",
+    "status.ready": "{done}/{total} 匹が柵へ。道が空いたひつじを選ぼう。",
+    "status.moving": "ひつじが柵へ走っています...",
+    "status.won": "すべてのひつじが柵に入りました。",
+    "status.failed": "失敗しました。もう一度どうぞ。",
+    "status.sheepEntered": "{done}/{total} 匹が柵へ。残りも片付けよう。",
+    "status.rescueReady": "救援開始：安全なひつじ {count} 匹が光っています。",
+    "status.rescueNone": "今は安全なひつじがいません。配置を見直そう。",
+    "result.win.title": "小屋に到着",
+    "result.win.body": "正しい順番です。すべてのひつじが柵に入りました。",
+    "result.fail.title": "失敗",
+    "fail.wrongTarget": "間違ったタップです。このレベルではひつじだけです。",
+    "fail.missed": "空振りです。間違えると失敗です。",
+    "fail.blocked": "道がふさがっています。",
+    "fail.blockedBySheep": "前に別のひつじがいます。",
+    "fail.blockedByObstacle": "木や干し草が道をふさいでいます。",
+    "fail.notAligned": "ひつじが小屋の方向を向いていません。",
+    "level.001.title": "最初のひつじ",
+    "level.002.title": "急に大群",
+    "level.003.title": "北へ",
+    "level.004.title": "草原を下る",
+    "level.005.title": "長い道",
+    "level.dynamic.title": "レベル {level}",
+  },
+  fr: {
+    "app.title": "Sheep Run",
+    "app.subtitle": "Des moutons dans tous les sens. Un seul enclos sucré.",
+    "button.start": "Jouer",
+    "button.retry": "Rejouer",
+    "button.next": "Suite",
+    "button.menu": "Menu",
+    "button.language": "Langue",
+    "button.mute": "Muet",
+    "button.sound": "Son",
+    "button.rewardRescue": "Secours bonus",
+    "button.pagePrev": "Niveaux précédents",
+    "button.pageNext": "Niveaux suivants",
+    "menu.levels": "Niveaux",
+    "menu.continue": "Continuer niveau {level}",
+    "menu.best": "{done}/{total} terminés",
+    "menu.rewardRescue": "Secours bonus",
+    "menu.rewardHint": "Récompense optionnelle, montre des moutons sûrs",
+    "objective.default": "Suis la direction du mouton. Un chemin bloqué échoue.",
+    "objective.beginner": "Lis les directions et touche les moutons libres.",
+    "objective.intermediate": "Les moutons se bloquent. L'ordre devient crucial.",
+    "objective.advanced": "Trouve les sorties, puis libère les longues lignes.",
+    "objective.expert": "Troupeau dense. Une erreur relance le niveau.",
+    "status.ready": "{done}/{total} dans l'enclos. Choisis un mouton libre.",
+    "status.moving": "Le mouton court vers l'enclos...",
+    "status.won": "Tous les moutons sont dans l'enclos.",
+    "status.failed": "Niveau échoué. Réessaie quand tu veux.",
+    "status.sheepEntered": "{done}/{total} dans l'enclos. Continue à dégager.",
+    "status.rescueReady": "Secours activé : {count} moutons sûrs brillent.",
+    "status.rescueNone": "Aucun mouton sûr pour le moment. Observe la formation.",
+    "result.win.title": "Enclos atteint",
+    "result.win.body": "Bon ordre. Tous les moutons sont rentrés.",
+    "result.fail.title": "Échec",
+    "fail.wrongTarget": "Mauvais appui. Ici, seuls les moutons comptent.",
+    "fail.missed": "Appui manqué. Toute erreur fait échouer.",
+    "fail.blocked": "Le chemin est bloqué.",
+    "fail.blockedBySheep": "Un autre mouton bloque le chemin.",
+    "fail.blockedByObstacle": "Un arbre ou une botte de foin bloque le chemin.",
+    "fail.notAligned": "Ce mouton n'est pas aligné avec une sortie.",
+    "level.001.title": "Premier mouton",
+    "level.002.title": "Troupeau soudain",
+    "level.003.title": "Vers le nord",
+    "level.004.title": "Descente du pré",
+    "level.005.title": "Long chemin",
+    "level.dynamic.title": "Niveau {level}",
+  },
+  de: {
+    "app.title": "Sheep Run",
+    "app.subtitle": "Viele Blickrichtungen. Ein einziger Zuckerweide-Pferch.",
+    "button.start": "Spielen",
+    "button.retry": "Neu",
+    "button.next": "Weiter",
+    "button.menu": "Menü",
+    "button.language": "Sprache",
+    "button.mute": "Stumm",
+    "button.sound": "Ton",
+    "button.rewardRescue": "Bonus-Hilfe",
+    "button.pagePrev": "Vorige Level",
+    "button.pageNext": "Nächste Level",
+    "menu.levels": "Level",
+    "menu.continue": "Level {level} fortsetzen",
+    "menu.best": "{done}/{total} geschafft",
+    "menu.rewardRescue": "Bonus-Hilfe",
+    "menu.rewardHint": "Optionale Belohnung zeigt sichere Schafe",
+    "objective.default": "Folge der Blickrichtung. Ein blockierter Weg scheitert.",
+    "objective.beginner": "Achte auf Pfeile und wähle freie Schafe.",
+    "objective.intermediate": "Schafe blockieren einander. Die Reihenfolge zählt.",
+    "objective.advanced": "Finde Ausgänge und löse lange blockierte Wege.",
+    "objective.expert": "Dichte Herde. Ein Fehler startet neu.",
+    "status.ready": "{done}/{total} im Pferch. Wähle ein freies Schaf.",
+    "status.moving": "Das Schaf läuft zum Pferch...",
+    "status.won": "Alle Schafe sind im Pferch.",
+    "status.failed": "Level fehlgeschlagen. Versuch es erneut.",
+    "status.sheepEntered": "{done}/{total} im Pferch. Räume die Herde weiter.",
+    "status.rescueReady": "Hilfe aktiv: {count} sichere Schafe leuchten.",
+    "status.rescueNone": "Gerade ist kein sicheres Schaf frei. Schau dir die Reihe an.",
+    "result.win.title": "Pferch erreicht",
+    "result.win.body": "Richtige Reihenfolge. Alle Schafe sind sicher drin.",
+    "result.fail.title": "Gescheitert",
+    "fail.wrongTarget": "Falscher Tipp. In diesem Level zählen nur Schafe.",
+    "fail.missed": "Daneben. Jeder falsche Tipp scheitert.",
+    "fail.blocked": "Der Weg ist blockiert.",
+    "fail.blockedBySheep": "Ein anderes Schaf blockiert den Weg.",
+    "fail.blockedByObstacle": "Ein Baum oder Heuballen blockiert den Weg.",
+    "fail.notAligned": "Dieses Schaf zeigt nicht zu einem freien Ausgang.",
+    "level.001.title": "Erstes Schaf",
+    "level.002.title": "Plötzlich voll",
+    "level.003.title": "Nach Norden",
+    "level.004.title": "Wiesenabstieg",
+    "level.005.title": "Langer Weg",
+    "level.dynamic.title": "Level {level}",
   },
   en: {
     "app.title": "Sheep Run",
@@ -45,13 +240,26 @@ const tables: Record<Locale, Record<string, string>> = {
     "button.language": "Language",
     "button.mute": "Mute",
     "button.sound": "Sound",
+    "button.rewardRescue": "Bonus Rescue",
+    "button.pagePrev": "Previous levels",
+    "button.pageNext": "Next levels",
     "menu.levels": "Levels",
-    "objective.default": "Follow each sheep's arrow. A blocked path fails.",
+    "menu.continue": "Continue Level {level}",
+    "menu.best": "{done}/{total} cleared",
+    "menu.rewardRescue": "Bonus Rescue",
+    "menu.rewardHint": "Optional reward, highlights safe sheep",
+    "objective.default": "Follow each sheep's direction. A blocked path fails.",
+    "objective.beginner": "Read the arrows and tap sheep with open lanes.",
+    "objective.intermediate": "Sheep now block each other. Order matters.",
+    "objective.advanced": "Find exits first, then remove the long-lane blockers.",
+    "objective.expert": "Dense flock. One wrong tap restarts the level.",
     "status.ready": "{done}/{total} sheep penned. Pick a clear sheep.",
     "status.moving": "Sheep is running to the pen...",
     "status.won": "All sheep are inside the pen.",
     "status.failed": "Level failed. Retry when ready.",
     "status.sheepEntered": "{done}/{total} sheep penned. Keep clearing the flock.",
+    "status.rescueReady": "Rescue active: {count} safe sheep are sparkling.",
+    "status.rescueNone": "No safe sheep are open right now. Reset and study the flock.",
     "result.win.title": "Barn Reached",
     "result.win.body": "Correct order. Every sheep made it into the pen.",
     "result.fail.title": "Failed",
@@ -62,43 +270,58 @@ const tables: Record<Locale, Record<string, string>> = {
     "fail.blockedByObstacle": "A tree or hay bale is blocking the path.",
     "fail.notAligned": "This sheep is not lined up with a clean exit.",
     "level.001.title": "First Sheep",
-    "level.002.title": "Turn Back",
+    "level.002.title": "Sudden Flock",
     "level.003.title": "Northbound",
     "level.004.title": "Down the Field",
-    "level.005.title": "Long Walk"
+    "level.005.title": "Long Walk",
+    "level.dynamic.title": "Level {level}",
   },
-  ja: {
-    "app.title": "ひつじラン",
-    "app.subtitle": "向きの違うひつじたちを、一つの柵へ。",
-    "button.start": "スタート",
-    "button.retry": "リトライ",
-    "button.next": "次へ",
-    "button.menu": "メニュー",
-    "button.language": "言語",
-    "button.mute": "ミュート",
-    "button.sound": "サウンド",
-    "menu.levels": "レベル",
-    "objective.default": "ひつじの向きに進みます。前が詰まると失敗。",
-    "status.ready": "{done}/{total} 匹が柵へ。道が空いたひつじを選ぼう。",
-    "status.moving": "ひつじが柵へ走っています...",
-    "status.won": "すべてのひつじが柵に入りました。",
-    "status.failed": "失敗しました。もう一度どうぞ。",
-    "status.sheepEntered": "{done}/{total} 匹が柵へ。残りも片付けよう。",
-    "result.win.title": "小屋に到着",
-    "result.win.body": "正しい順番です。すべてのひつじが柵に入りました。",
-    "result.fail.title": "失敗",
-    "fail.wrongTarget": "間違ったタップです。このレベルではひつじだけです。",
-    "fail.missed": "空振りです。間違えると失敗です。",
-    "fail.blocked": "道がふさがっています。",
-    "fail.blockedBySheep": "前に別のひつじがいます。",
-    "fail.blockedByObstacle": "木や干し草が道をふさいでいます。",
-    "fail.notAligned": "ひつじが小屋の方向を向いていません。",
-    "level.001.title": "最初のひつじ",
-    "level.002.title": "戻る道",
-    "level.003.title": "北へ",
-    "level.004.title": "草原を下る",
-    "level.005.title": "長い道"
-  }
+  ar: {
+    "app.title": "Sheep Run",
+    "app.subtitle": "خراف كثيرة الاتجاهات وحظيرة حلوى واحدة.",
+    "button.start": "ابدأ",
+    "button.retry": "إعادة",
+    "button.next": "التالي",
+    "button.menu": "القائمة",
+    "button.language": "اللغة",
+    "button.mute": "كتم",
+    "button.sound": "الصوت",
+    "button.rewardRescue": "إنقاذ إضافي",
+    "button.pagePrev": "المراحل السابقة",
+    "button.pageNext": "المراحل التالية",
+    "menu.levels": "المراحل",
+    "menu.continue": "تابع المرحلة {level}",
+    "menu.best": "تم إنهاء {done}/{total}",
+    "menu.rewardRescue": "إنقاذ إضافي",
+    "menu.rewardHint": "مكافأة اختيارية تبرز الخراف الآمنة",
+    "objective.default": "اتبع اتجاه كل خروف. الطريق المسدود يعني الفشل.",
+    "objective.beginner": "اقرأ الأسهم واختر الخراف ذات الطريق المفتوح.",
+    "objective.intermediate": "الخراف تسد الطريق لبعضها. الترتيب مهم.",
+    "objective.advanced": "ابحث عن المخارج ثم حرر الطرق الطويلة.",
+    "objective.expert": "قطيع مزدحم. أي نقرة خاطئة تعيد المرحلة.",
+    "status.ready": "{done}/{total} داخل الحظيرة. اختر خروفا طريقه مفتوح.",
+    "status.moving": "الخروف يركض نحو الحظيرة...",
+    "status.won": "كل الخراف دخلت الحظيرة.",
+    "status.failed": "فشلت المرحلة. حاول من جديد.",
+    "status.sheepEntered": "{done}/{total} داخل الحظيرة. تابع تفريغ القطيع.",
+    "status.rescueReady": "الإنقاذ مفعل: {count} خراف آمنة تلمع.",
+    "status.rescueNone": "لا يوجد خروف آمن الآن. أعد المحاولة وراقب القطيع.",
+    "result.win.title": "وصلت الحظيرة",
+    "result.win.body": "الترتيب صحيح. كل الخراف دخلت بأمان.",
+    "result.fail.title": "فشل",
+    "fail.wrongTarget": "نقرة خاطئة. هذه المرحلة تقبل الخراف فقط.",
+    "fail.missed": "نقرة فارغة. أي خطأ يعني الفشل.",
+    "fail.blocked": "الطريق مسدود.",
+    "fail.blockedBySheep": "خروف آخر يسد الطريق.",
+    "fail.blockedByObstacle": "شجرة أو بالة قش تسد الطريق.",
+    "fail.notAligned": "هذا الخروف ليس على مسار خروج واضح.",
+    "level.001.title": "الخروف الأول",
+    "level.002.title": "قطيع مفاجئ",
+    "level.003.title": "نحو الشمال",
+    "level.004.title": "نزول المرج",
+    "level.005.title": "طريق طويل",
+    "level.dynamic.title": "المرحلة {level}",
+  },
 };
 
 export class Localization {
@@ -113,8 +336,23 @@ export class Localization {
     return this.locale;
   }
 
+  get isRtl(): boolean {
+    return this.locale === "ar";
+  }
+
   t(key: string): string {
-    return tables[this.locale][key] ?? tables.en[key] ?? key;
+    const direct = tables[this.locale][key] ?? tables.en[key];
+    if (direct) {
+      return direct;
+    }
+
+    const generatedLevelTitle = /^level\.(\d{3})\.title$/.exec(key);
+    if (generatedLevelTitle) {
+      return (tables[this.locale]["level.dynamic.title"] ?? tables.en["level.dynamic.title"])
+        .replace("{level}", String(Number(generatedLevelTitle[1])));
+    }
+
+    return key;
   }
 
   cycle(): Locale {
@@ -122,18 +360,35 @@ export class Localization {
     this.locale = localeOrder[(index + 1) % localeOrder.length];
     localStorage.setItem("sheepRun.locale", this.locale);
     document.documentElement.lang = this.locale;
+    document.documentElement.dir = this.isRtl ? "rtl" : "ltr";
     return this.locale;
   }
 }
 
 function detectLocale(): Locale {
-  const language = navigator.language;
+  const language = navigator.language.toLowerCase();
+  if (language.startsWith("zh-hant") || language.startsWith("zh-tw") || language.startsWith("zh-hk") || language.startsWith("zh-mo")) {
+    return "zh-TW";
+  }
+
   if (language.startsWith("zh")) {
     return "zh-CN";
   }
 
   if (language.startsWith("ja")) {
     return "ja";
+  }
+
+  if (language.startsWith("fr")) {
+    return "fr";
+  }
+
+  if (language.startsWith("de")) {
+    return "de";
+  }
+
+  if (language.startsWith("ar")) {
+    return "ar";
   }
 
   return "en";

@@ -1,15 +1,27 @@
 {
   "name": "sheep-run",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
+    "android:sync": "npm run build && npx cap sync android && node tools/prune-android-web-assets.mjs && python3 tools/optimize-android-resources.py",
+    "android:apk": "npm run android:sync && cd android && ./gradlew assembleDebug",
+    "android:aab": "npm run android:sync && cd android && ./gradlew bundleRelease",
+    "brand:generate": "python3 tools/generate-brand-assets.py",
+    "assets:optimize": "python3 tools/optimize-runtime-assets.py",
+    "levels:generate": "node tools/generate-levels.mjs",
+    "levels:validate": "node tools/validate-levels.mjs",
+    "release:audit": "node tools/release-readiness-audit.mjs",
     "test": "node tools/validate-levels.mjs"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1"
+  },
   "devDependencies": {
     "typescript": "^5.9.3",
     "vite": "^8.0.14"

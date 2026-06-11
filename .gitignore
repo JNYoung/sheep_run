@@ -7,8 +7,14 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Native wrapper outputs, generated later by Capacitor
-android/
+# Native wrapper local/build outputs
+android/.gradle/
+android/local.properties
+android/keystore.properties
+android/*.jks
+android/**/build/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
 ios/
 
 # IDE and OS files

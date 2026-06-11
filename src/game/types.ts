@@ -32,6 +32,9 @@ export interface LevelDefinition {
   sheep: SheepDefinition[];
   pen: SheepPenDefinition;
   obstacles: ObstacleDefinition[];
+  difficulty?: number;
+  recommendedMoves?: number;
+  generatedSeed?: number;
 }
 
 export interface TapIntent {
@@ -62,6 +65,7 @@ export interface GameViewState {
   sheep: SheepDefinition[];
   move: MoveState | null;
   feedback: FeedbackState | null;
+  hintSheepIds?: string[];
   now: number;
 }
 

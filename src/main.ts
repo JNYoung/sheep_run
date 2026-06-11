@@ -1,7 +1,7 @@
 import "./styles.css";
 import { GameAudio } from "./audio/audio";
 import { getLevel, levels } from "./game/levelLoader";
-import { evaluateTap } from "./game/rules";
+import { buildEscapePath, evaluateTap } from "./game/rules";
 import type { FeedbackState, GamePhase, GameViewState, LevelDefinition, MoveState, SheepDefinition } from "./game/types";
 import { CanvasRenderer } from "./render/canvasRenderer";
 import { Localization } from "./ui/localization";
@@ -14,6 +14,11 @@ if (!app) {
 app.innerHTML = `
   <main class="game-shell">
     <canvas class="game-canvas" aria-label="Sheep Run game board"></canvas>
+
+    <section class="splash" data-role="splash">
+      <div class="splash-mark"></div>
+      <h1 data-role="splash-title"></h1>
+    </section>
 
     <section class="top-bar" hidden>
       <div class="objective">
@@ -31,18 +36,56 @@ app.innerHTML = `
       <div class="status-chip" data-role="status"></div>
     </section>
 
-    <section class="overlay" data-role="menu">
-      <div class="panel menu-panel">
-        <h1 class="title" data-role="app-title"></h1>
-        <p class="subtitle" data-role="app-subtitle"></p>
-        <p class="level-label" data-role="level-label"></p>
-        <div class="level-grid" data-role="level-grid"></div>
-        <div class="menu-row">
-          <button class="text-button primary" type="button" data-action="start"></button>
-          <button class="text-button" type="button" data-action="language"></button>
-          <button class="text-button" type="button" data-action="sound"></button>
-        </div>
+    <section class="overlay home-overlay" data-role="menu">
+      <div class="menu-scene" aria-hidden="true">
+        <span class="scene-sun"></span>
+        <span class="scene-cloud scene-cloud-a"></span>
+        <span class="scene-cloud scene-cloud-b"></span>
+        <span class="scene-hill scene-hill-a"></span>
+        <span class="scene-hill scene-hill-b"></span>
+        <span class="scene-barn"></span>
+        <span class="scene-sheep scene-sheep-a"></span>
+        <span class="scene-sheep scene-sheep-b"></span>
+        <span class="scene-sheep scene-sheep-c"></span>
       </div>
+      <div class="scene-controls">
+        <button class="scene-control control-language" type="button" data-action="language" aria-label="Language"></button>
+        <button class="scene-control control-sound" type="button" data-action="sound" aria-label="Sound"></button>
+      </div>
+      <div class="panel menu-panel">
+        <div class="home-brand">
+          <div class="home-mark" aria-hidden="true"></div>
+          <div>
+            <h1 class="title" data-role="app-title"></h1>
+            <p class="subtitle" data-role="app-subtitle"></p>
+          </div>
+        </div>
+        <div class="home-progress">
+          <span data-role="progress-label"></span>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" data-role="progress-fill"></div>
+          </div>
+        </div>
+        <div class="menu-row home-actions">
+          <button class="text-button primary home-primary" type="button" data-action="start"></button>
+        </div>
+        <div class="level-header">
+          <p class="level-label" data-role="level-label"></p>
+          <div class="level-pager">
+            <button class="icon-button small" type="button" data-action="page-prev" aria-label="Previous levels"></button>
+            <span data-role="level-page"></span>
+            <button class="icon-button small" type="button" data-action="page-next" aria-label="Next levels"></button>
+          </div>
+        </div>
+        <div class="level-grid" data-role="level-grid"></div>
+      </div>
+      <button class="reward-ticket" type="button" data-action="reward-rescue">
+        <span class="reward-icon" aria-hidden="true"></span>
+        <span class="reward-copy">
+          <strong data-role="reward-label"></strong>
+          <small data-role="reward-hint"></small>
+        </span>
+      </button>
     </section>
 
     <section class="overlay" data-role="result" hidden>
@@ -52,6 +95,7 @@ app.innerHTML = `
         <div class="result-actions">
           <button class="text-button primary" type="button" data-action="next"></button>
           <button class="text-button" type="button" data-action="retry"></button>
+          <button class="text-button reward-action" type="button" data-action="reward-rescue"></button>
           <button class="text-button" type="button" data-action="menu"></button>
           <button class="text-button" type="button" data-action="language"></button>
           <button class="text-button" type="button" data-action="sound"></button>
@@ -71,14 +115,21 @@ const i18n = new Localization();
 const audio = new GameAudio();
 
 const els = {
+  splash: document.querySelector<HTMLElement>('[data-role="splash"]')!,
+  splashTitle: document.querySelector<HTMLElement>('[data-role="splash-title"]')!,
   topBar: document.querySelector<HTMLElement>(".top-bar")!,
   bottomStatus: document.querySelector<HTMLElement>(".bottom-status")!,
   menu: document.querySelector<HTMLElement>('[data-role="menu"]')!,
   result: document.querySelector<HTMLElement>('[data-role="result"]')!,
   title: document.querySelector<HTMLElement>('[data-role="app-title"]')!,
   subtitle: document.querySelector<HTMLElement>('[data-role="app-subtitle"]')!,
+  progressLabel: document.querySelector<HTMLElement>('[data-role="progress-label"]')!,
+  progressFill: document.querySelector<HTMLElement>('[data-role="progress-fill"]')!,
   levelLabel: document.querySelector<HTMLElement>('[data-role="level-label"]')!,
+  levelPage: document.querySelector<HTMLElement>('[data-role="level-page"]')!,
   levelGrid: document.querySelector<HTMLElement>('[data-role="level-grid"]')!,
+  rewardLabel: document.querySelector<HTMLElement>('[data-role="reward-label"]')!,
+  rewardHint: document.querySelector<HTMLElement>('[data-role="reward-hint"]')!,
   levelTitle: document.querySelector<HTMLElement>('[data-role="level-title"]')!,
   objective: document.querySelector<HTMLElement>('[data-role="objective"]')!,
   status: document.querySelector<HTMLElement>('[data-role="status"]')!,
@@ -91,6 +142,23 @@ if (!Number.isFinite(selectedLevelIndex) || selectedLevelIndex < 0 || selectedLe
   selectedLevelIndex = 0;
 }
 
+const pageSize = 40;
+let levelPageIndex = Math.floor(selectedLevelIndex / pageSize);
+let highestCompletedIndex = Number(localStorage.getItem("sheepRun.highestCompletedLevel") ?? -1);
+if (!Number.isFinite(highestCompletedIndex) || highestCompletedIndex < -1 || highestCompletedIndex >= levels.length) {
+  highestCompletedIndex = -1;
+}
+const debugLevelIndex = import.meta.env.DEV ? readDebugLevelIndex() : null;
+if (debugLevelIndex !== null) {
+  selectedLevelIndex = debugLevelIndex;
+  highestCompletedIndex = Math.max(highestCompletedIndex, debugLevelIndex - 1);
+}
+let highestUnlockedIndex = Math.min(levels.length - 1, highestCompletedIndex + 1);
+if (selectedLevelIndex > highestUnlockedIndex) {
+  selectedLevelIndex = highestUnlockedIndex;
+}
+levelPageIndex = Math.floor(selectedLevelIndex / pageSize);
+
 let phase: GamePhase = "menu";
 let level: LevelDefinition = getLevel(selectedLevelIndex);
 let activeSheep: SheepDefinition[] = cloneSheep(level);
@@ -99,13 +167,17 @@ let feedback: FeedbackState | null = null;
 let statusKey = "status.ready";
 let resultWasWin = false;
 let enteredCount = 0;
+let hintSheepIds: string[] = [];
 
 refreshTexts();
 showMenu();
+window.setTimeout(() => {
+  els.splash.hidden = true;
+}, 950);
 requestAnimationFrame(tick);
 
 canvas.addEventListener("pointerdown", async (event) => {
-  await audio.unlock();
+  void audio.unlock();
   if (phase !== "ready") {
     return;
   }
@@ -131,6 +203,7 @@ canvas.addEventListener("pointerdown", async (event) => {
     phase = "moving";
     statusKey = "status.moving";
     feedback = null;
+    hintSheepIds = hintSheepIds.filter((id) => id !== selectedSheep.id);
     audio.sheep();
     renderUiState();
     return;
@@ -155,7 +228,7 @@ document.addEventListener("click", async (event) => {
     return;
   }
 
-  await audio.unlock();
+  void audio.unlock();
   audio.click();
 
   switch (action) {
@@ -169,6 +242,14 @@ document.addEventListener("click", async (event) => {
     case "next":
       startLevel((selectedLevelIndex + 1) % levels.length);
       break;
+    case "page-prev":
+      levelPageIndex = Math.max(0, levelPageIndex - 1);
+      refreshLevelButtons();
+      break;
+    case "page-next":
+      levelPageIndex = Math.min(Math.ceil(levels.length / pageSize) - 1, levelPageIndex + 1);
+      refreshLevelButtons();
+      break;
     case "menu":
       showMenu();
       break;
@@ -181,12 +262,19 @@ document.addEventListener("click", async (event) => {
       audio.toggleMuted();
       refreshTexts();
       break;
+    case "reward-rescue":
+      grantRewardRescue();
+      break;
     default:
       break;
   }
 });
 
 function startLevel(index: number): void {
+  if (index > highestUnlockedIndex) {
+    return;
+  }
+
   selectedLevelIndex = index;
   localStorage.setItem("sheepRun.selectedLevel", String(selectedLevelIndex));
   level = getLevel(selectedLevelIndex);
@@ -194,6 +282,7 @@ function startLevel(index: number): void {
   activeSheep = cloneSheep(level);
   move = null;
   feedback = null;
+  hintSheepIds = [];
   statusKey = "status.ready";
   resultWasWin = false;
   enteredCount = 0;
@@ -209,6 +298,7 @@ function showMenu(): void {
   phase = "menu";
   move = null;
   feedback = null;
+  hintSheepIds = [];
   els.menu.hidden = false;
   els.result.hidden = true;
   els.topBar.hidden = true;
@@ -217,6 +307,7 @@ function showMenu(): void {
   activeSheep = cloneSheep(level);
   enteredCount = 0;
   refreshLevelButtons();
+  renderProgress();
 }
 
 function showResult(win: boolean, bodyKey: string): void {
@@ -229,6 +320,10 @@ function showResult(win: boolean, bodyKey: string): void {
   const nextButton = document.querySelector<HTMLElement>('[data-action="next"]');
   if (nextButton) {
     nextButton.hidden = !win;
+  }
+  const rewardButton = els.result.querySelector<HTMLElement>('[data-action="reward-rescue"]');
+  if (rewardButton) {
+    rewardButton.hidden = win;
   }
   renderUiState();
 }
@@ -249,6 +344,7 @@ function completeMove(now: number): void {
   if (activeSheep.length === 0) {
     phase = "won";
     resultWasWin = true;
+    markLevelComplete(selectedLevelIndex);
     audio.win();
     showResult(true, "result.win.body");
     return;
@@ -269,6 +365,7 @@ function tick(now: number): void {
     sheep: phase === "menu" ? cloneSheep(previewLevel) : activeSheep,
     move,
     feedback,
+    hintSheepIds: phase === "ready" ? hintSheepIds : [],
     now,
   } satisfies GameViewState);
 
@@ -278,12 +375,16 @@ function tick(now: number): void {
 function refreshTexts(): void {
   document.title = i18n.t("app.title");
   document.documentElement.lang = i18n.current;
+  document.documentElement.dir = i18n.isRtl ? "rtl" : "ltr";
+  els.splashTitle.textContent = i18n.t("app.title");
   els.title.textContent = i18n.t("app.title");
   els.subtitle.textContent = i18n.t("app.subtitle");
   els.levelLabel.textContent = i18n.t("menu.levels");
+  els.rewardLabel.textContent = i18n.t("menu.rewardRescue");
+  els.rewardHint.textContent = i18n.t("menu.rewardHint");
 
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="start"]')) {
-    button.textContent = i18n.t("button.start");
+    button.textContent = i18n.t("menu.continue").replace("{level}", String(selectedLevelIndex + 1));
   }
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="retry"], [data-action="restart"]')) {
     if (button.dataset.action === "restart") {
@@ -296,6 +397,9 @@ function refreshTexts(): void {
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="next"]')) {
     button.textContent = i18n.t("button.next");
   }
+  for (const button of document.querySelectorAll<HTMLElement>('[data-action="reward-rescue"].reward-action')) {
+    button.textContent = i18n.t("button.rewardRescue");
+  }
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="menu"]')) {
     button.textContent = i18n.t("button.menu");
   }
@@ -307,8 +411,15 @@ function refreshTexts(): void {
     button.textContent = audio.isMuted ? "SFX" : "♪";
     button.setAttribute("aria-label", i18n.t(audio.isMuted ? "button.sound" : "button.mute"));
   }
+  for (const button of document.querySelectorAll<HTMLElement>('[data-action="page-prev"]')) {
+    button.setAttribute("aria-label", i18n.t("button.pagePrev"));
+  }
+  for (const button of document.querySelectorAll<HTMLElement>('[data-action="page-next"]')) {
+    button.setAttribute("aria-label", i18n.t("button.pageNext"));
+  }
 
   refreshLevelButtons();
+  renderProgress();
   renderUiState();
   if (!els.result.hidden) {
     els.resultTitle.textContent = i18n.t(resultWasWin ? "result.win.title" : "result.fail.title");
@@ -323,29 +434,94 @@ function renderUiState(): void {
   els.status.textContent = i18n.t(statusKey)
     .replace("{done}", String(enteredCount))
     .replace("{total}", String(total))
-    .replace("{left}", String(activeSheep.length));
+    .replace("{left}", String(activeSheep.length))
+    .replace("{count}", String(hintSheepIds.length));
 }
 
 function refreshLevelButtons(): void {
   els.levelGrid.innerHTML = "";
-  levels.forEach((candidate, index) => {
+  const pageCount = Math.ceil(levels.length / pageSize);
+  levelPageIndex = Math.max(0, Math.min(pageCount - 1, levelPageIndex));
+  const start = levelPageIndex * pageSize;
+  const end = Math.min(levels.length, start + pageSize);
+  els.levelPage.textContent = `${start + 1}-${end}`;
+
+  const prevButton = document.querySelector<HTMLButtonElement>('[data-action="page-prev"]');
+  const nextButton = document.querySelector<HTMLButtonElement>('[data-action="page-next"]');
+  if (prevButton) {
+    prevButton.disabled = levelPageIndex === 0;
+  }
+  if (nextButton) {
+    nextButton.disabled = levelPageIndex >= pageCount - 1;
+  }
+
+  levels.slice(start, end).forEach((candidate, offset) => {
+    const index = start + offset;
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = String(index + 1);
     button.title = i18n.t(candidate.titleKey);
     button.setAttribute("aria-pressed", String(index === selectedLevelIndex));
+    button.dataset.difficulty = String(candidate.difficulty ?? 1);
+    if (index <= highestCompletedIndex) {
+      button.dataset.state = "complete";
+    } else if (index > highestUnlockedIndex) {
+      button.dataset.state = "locked";
+      button.disabled = true;
+    }
     button.addEventListener("click", async () => {
-      await audio.unlock();
+      void audio.unlock();
       audio.click();
+      if (index > highestUnlockedIndex) {
+        return;
+      }
       selectedLevelIndex = index;
+      levelPageIndex = Math.floor(index / pageSize);
       localStorage.setItem("sheepRun.selectedLevel", String(index));
       level = getLevel(index);
       activeSheep = cloneSheep(level);
       enteredCount = 0;
       refreshLevelButtons();
+      renderProgress();
+      refreshTexts();
     });
     els.levelGrid.appendChild(button);
   });
+}
+
+function renderProgress(): void {
+  const done = Math.max(0, highestCompletedIndex + 1);
+  els.progressLabel.textContent = i18n.t("menu.best")
+    .replace("{done}", String(done))
+    .replace("{total}", String(levels.length));
+  els.progressFill.style.width = `${Math.round((done / levels.length) * 100)}%`;
+}
+
+function grantRewardRescue(): void {
+  startLevel(selectedLevelIndex);
+  const candidates = findClearSheepIds();
+  const candidateCount = Math.max(1, Math.min(6, Math.ceil(level.sheep.length / 42)));
+  hintSheepIds = candidates.slice(0, candidateCount);
+  statusKey = hintSheepIds.length > 0 ? "status.rescueReady" : "status.rescueNone";
+  renderUiState();
+}
+
+function findClearSheepIds(): string[] {
+  return activeSheep
+    .filter((sheep) => buildEscapePath(level, sheep, activeSheep).blocker === "none")
+    .sort((a, b) => a.y - b.y || a.x - b.x)
+    .map((sheep) => sheep.id);
+}
+
+function markLevelComplete(index: number): void {
+  if (index <= highestCompletedIndex) {
+    return;
+  }
+
+  highestCompletedIndex = index;
+  highestUnlockedIndex = Math.min(levels.length - 1, highestCompletedIndex + 1);
+  localStorage.setItem("sheepRun.highestCompletedLevel", String(highestCompletedIndex));
+  renderProgress();
 }
 
 function cloneSheep(sourceLevel: LevelDefinition): SheepDefinition[] {
@@ -356,10 +532,32 @@ function shortLocaleLabel(): string {
   switch (i18n.current) {
     case "zh-CN":
       return "中";
+    case "zh-TW":
+      return "繁";
     case "ja":
       return "日";
+    case "fr":
+      return "FR";
+    case "de":
+      return "DE";
+    case "ar":
+      return "ع";
     case "en":
     default:
       return "EN";
   }
+}
+
+function readDebugLevelIndex(): number | null {
+  const raw = new URLSearchParams(window.location.search).get("debugLevel");
+  if (!raw) {
+    return null;
+  }
+
+  const levelNumber = Number(raw);
+  if (!Number.isInteger(levelNumber)) {
+    return null;
+  }
+
+  return Math.max(0, Math.min(levels.length - 1, levelNumber - 1));
 }

@@ -9,6 +9,9 @@ export interface IsoLayout {
   originX: number;
   originY: number;
   scale: number;
+  decorScale: number;
+  entityScale: number;
+  obstacleScale: number;
 }
 
 export interface ScreenPoint {
@@ -20,14 +23,20 @@ export function createIsoLayout(canvas: HTMLCanvasElement, level: LevelDefinitio
   const rect = canvas.getBoundingClientRect();
   const width = Math.max(1, rect.width);
   const height = Math.max(1, rect.height);
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const baseTileWidth = 104;
   const baseTileHeight = 58;
   const unscaledBoardWidth = (level.width + level.height) * baseTileWidth * 0.5;
   const unscaledBoardHeight = (level.width + level.height) * baseTileHeight * 0.5;
-  const availableWidth = width * 0.86;
-  const availableHeight = height * (width < 720 ? 0.46 : 0.58);
-  const scale = clamp(Math.min(availableWidth / unscaledBoardWidth, availableHeight / unscaledBoardHeight), 0.66, 1.18);
+  const availableWidth = width * 0.9;
+  const availableHeight = height * (width < 720 ? 0.52 : 0.62);
+  const boardEdge = Math.max(level.width, level.height);
+  const minScale = boardEdge >= 14 ? 0.2 : boardEdge >= 10 ? 0.24 : width < 480 ? 0.3 : 0.38;
+  const scale = clamp(Math.min(availableWidth / unscaledBoardWidth, availableHeight / unscaledBoardHeight), minScale, 1.18);
+  const crowdPressure = clamp((level.sheep.length - 36) / 184, 0, 1);
+  const boardPressure = clamp((boardEdge - 9) / 7, 0, 1);
+  const pressure = Math.max(crowdPressure, boardPressure * 0.75);
+  const dprCeiling = pressure > 0.85 ? 1.1 : pressure > 0.55 ? 1.35 : 2;
+  const dpr = Math.min(window.devicePixelRatio || 1, dprCeiling);
   const tileWidth = baseTileWidth * scale;
   const tileHeight = baseTileHeight * scale;
   const boardHeight = (level.width + level.height) * tileHeight * 0.5;
@@ -41,6 +50,9 @@ export function createIsoLayout(canvas: HTMLCanvasElement, level: LevelDefinitio
     originX: width * 0.5,
     originY: Math.max(height * 0.26, height * 0.5 - boardHeight * 0.55),
     scale,
+    decorScale: scale * (1 - pressure * 0.18),
+    entityScale: scale * (1 - pressure * 0.44),
+    obstacleScale: scale * (1 - pressure * 0.32),
   };
 }
 

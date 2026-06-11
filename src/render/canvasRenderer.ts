@@ -16,33 +16,33 @@ type Drawable = {
 };
 
 const ASSET_BASE = "/assets/v1";
+const ASSET_EXT = "webp";
 
 const assetPaths = {
-  barn: `${ASSET_BASE}/structures/barn.png`,
-  boardEdgeCorner: `${ASSET_BASE}/scene/board_edge_corner.png`,
-  contactShadow: `${ASSET_BASE}/scene/contact_shadow.png`,
-  directionArrow: `${ASSET_BASE}/scene/direction_arrow.png`,
-  fenceSegment: `${ASSET_BASE}/obstacles/fence_segment.png`,
-  flowerPatch: `${ASSET_BASE}/obstacles/flower_patch.png`,
-  gateSegment: `${ASSET_BASE}/obstacles/gate_segment.png`,
-  grassCornerFlowers: `${ASSET_BASE}/scene/grass_corner_flowers.png`,
-  grassTileDark: `${ASSET_BASE}/scene/grass_tile_dark.png`,
-  grassTileLight: `${ASSET_BASE}/scene/grass_tile_light.png`,
-  hayBale: `${ASSET_BASE}/obstacles/hay_bale.png`,
-  hayBucket: `${ASSET_BASE}/obstacles/hay_bucket.png`,
-  hedge: `${ASSET_BASE}/obstacles/hedge.png`,
-  pastureTree: `${ASSET_BASE}/obstacles/pasture_tree.png`,
-  shrubFlower: `${ASSET_BASE}/obstacles/shrub_flower.png`,
-  successSparkle: `${ASSET_BASE}/scene/success_sparkle.png`,
-  wrongTapRipple: `${ASSET_BASE}/scene/wrong_tap_ripple.png`,
-  sheepIdleNorth: `${ASSET_BASE}/sprites/sheep/sheep_idle_north.png`,
-  sheepIdleEast: `${ASSET_BASE}/sprites/sheep/sheep_idle_east.png`,
-  sheepIdleSouth: `${ASSET_BASE}/sprites/sheep/sheep_idle_south.png`,
-  sheepIdleWest: `${ASSET_BASE}/sprites/sheep/sheep_idle_west.png`,
-  sheepRunNorth: `${ASSET_BASE}/sprites/sheep/sheep_run_north.png`,
-  sheepRunEast: `${ASSET_BASE}/sprites/sheep/sheep_run_east.png`,
-  sheepRunSouth: `${ASSET_BASE}/sprites/sheep/sheep_run_south.png`,
-  sheepRunWest: `${ASSET_BASE}/sprites/sheep/sheep_run_west.png`,
+  barn: `${ASSET_BASE}/structures/barn.${ASSET_EXT}`,
+  boardEdgeCorner: `${ASSET_BASE}/scene/board_edge_corner.${ASSET_EXT}`,
+  contactShadow: `${ASSET_BASE}/scene/contact_shadow.${ASSET_EXT}`,
+  fenceSegment: `${ASSET_BASE}/obstacles/fence_segment.${ASSET_EXT}`,
+  flowerPatch: `${ASSET_BASE}/obstacles/flower_patch.${ASSET_EXT}`,
+  gateSegment: `${ASSET_BASE}/obstacles/gate_segment.${ASSET_EXT}`,
+  grassCornerFlowers: `${ASSET_BASE}/scene/grass_corner_flowers.${ASSET_EXT}`,
+  grassTileDark: `${ASSET_BASE}/scene/grass_tile_dark.${ASSET_EXT}`,
+  grassTileLight: `${ASSET_BASE}/scene/grass_tile_light.${ASSET_EXT}`,
+  hayBale: `${ASSET_BASE}/obstacles/hay_bale.${ASSET_EXT}`,
+  hayBucket: `${ASSET_BASE}/obstacles/hay_bucket.${ASSET_EXT}`,
+  hedge: `${ASSET_BASE}/obstacles/hedge.${ASSET_EXT}`,
+  pastureTree: `${ASSET_BASE}/obstacles/pasture_tree.${ASSET_EXT}`,
+  shrubFlower: `${ASSET_BASE}/obstacles/shrub_flower.${ASSET_EXT}`,
+  successSparkle: `${ASSET_BASE}/scene/success_sparkle.${ASSET_EXT}`,
+  wrongTapRipple: `${ASSET_BASE}/scene/wrong_tap_ripple.${ASSET_EXT}`,
+  sheepIdleNorth: `${ASSET_BASE}/sprites/sheep/sheep_idle_north.${ASSET_EXT}`,
+  sheepIdleEast: `${ASSET_BASE}/sprites/sheep/sheep_idle_east.${ASSET_EXT}`,
+  sheepIdleSouth: `${ASSET_BASE}/sprites/sheep/sheep_idle_south.${ASSET_EXT}`,
+  sheepIdleWest: `${ASSET_BASE}/sprites/sheep/sheep_idle_west.${ASSET_EXT}`,
+  sheepRunNorth: `${ASSET_BASE}/sprites/sheep/sheep_run_north.${ASSET_EXT}`,
+  sheepRunEast: `${ASSET_BASE}/sprites/sheep/sheep_run_east.${ASSET_EXT}`,
+  sheepRunSouth: `${ASSET_BASE}/sprites/sheep/sheep_run_south.${ASSET_EXT}`,
+  sheepRunWest: `${ASSET_BASE}/sprites/sheep/sheep_run_west.${ASSET_EXT}`,
 } as const;
 
 type AssetKey = keyof typeof assetPaths;
@@ -104,6 +104,7 @@ export class CanvasRenderer {
     this.drawTiles(layout, view.level);
 
     const drawables: Drawable[] = [];
+    const hintIds = new Set(view.hintSheepIds ?? []);
     for (const obstacle of view.level.obstacles) {
       drawables.push({
         depth: obstacle.x + obstacle.y + 0.1,
@@ -123,7 +124,7 @@ export class CanvasRenderer {
 
       drawables.push({
         depth: sheep.x + sheep.y + 0.5,
-        draw: () => this.drawSheep(layout, sheep, false, view.now),
+        draw: () => this.drawSheep(layout, sheep, false, view.now, hintIds.has(sheep.id)),
       });
     }
 
@@ -131,7 +132,7 @@ export class CanvasRenderer {
     if (movingSheep) {
       drawables.push({
         depth: movingSheep.x + movingSheep.y + 0.75,
-        draw: () => this.drawSheep(layout, movingSheep, true, view.now),
+        draw: () => this.drawSheep(layout, movingSheep, true, view.now, false),
       });
     }
 
@@ -303,7 +304,8 @@ export class CanvasRenderer {
 
   private drawObstacle(layout: IsoLayout, obstacle: ObstacleDefinition): void {
     const center = gridToScreen(layout, obstacle);
-    const s = layout.scale;
+    const s = layout.obstacleScale;
+    const hitS = Math.max(layout.scale * 0.58, s);
     this.drawShadow(center.x, center.y + 20 * s, 72 * s, 18 * s, 0.13);
 
     let drewAsset = false;
@@ -333,7 +335,7 @@ export class CanvasRenderer {
       type: "obstacle",
       coord: obstacle,
       depth: obstacle.x + obstacle.y + 0.4,
-      contains: (point) => this.pointInRect(point, center.x, center.y - 18 * layout.scale, 78 * layout.scale, 72 * layout.scale),
+      contains: (point) => this.pointInRect(point, center.x, center.y - 18 * hitS, 78 * hitS, 72 * hitS),
     });
   }
 
@@ -413,18 +415,23 @@ export class CanvasRenderer {
     });
   }
 
-  private drawSheep(layout: IsoLayout, sheep: SheepDefinition, moving: boolean, now: number): void {
+  private drawSheep(layout: IsoLayout, sheep: SheepDefinition, moving: boolean, now: number, highlighted: boolean): void {
     const ctx = this.ctx;
     const center = gridToScreen(layout, sheep);
-    const s = layout.scale;
+    const s = layout.entityScale;
+    const hitS = Math.max(layout.scale * 0.56, s);
     const bounce = moving ? Math.sin(now * 0.024) * 5 * s : Math.sin(now * 0.003) * 2 * s;
+    if (highlighted) {
+      this.drawRescueGlow(layout, center, now);
+    }
+
     if (this.drawSheepAsset(layout, sheep, moving, center, bounce)) {
       this.hitTargets.push({
         type: "sheep",
         coord: { x: Math.round(sheep.x), y: Math.round(sheep.y) },
         sheepId: sheep.id,
         depth: sheep.x + sheep.y + 0.75,
-        contains: (point) => this.pointInRect(point, center.x, center.y - 26 * s, 104 * s, 96 * s),
+        contains: (point) => this.pointInRect(point, center.x, center.y - 26 * hitS, 104 * hitS, 96 * hitS),
       });
       return;
     }
@@ -492,7 +499,7 @@ export class CanvasRenderer {
       coord: { x: Math.round(sheep.x), y: Math.round(sheep.y) },
       sheepId: sheep.id,
       depth: sheep.x + sheep.y + 0.75,
-      contains: (point) => this.pointInRect(point, center.x, center.y - 38 * s, 88 * s, 86 * s),
+      contains: (point) => this.pointInRect(point, center.x, center.y - 38 * hitS, 88 * hitS, 86 * hitS),
     });
   }
 
@@ -530,7 +537,7 @@ export class CanvasRenderer {
 
   private drawForegroundDecor(layout: IsoLayout, level: LevelDefinition): void {
     const last = gridToScreen(layout, { x: level.width - 1, y: level.height - 1 });
-    const s = layout.scale;
+    const s = layout.decorScale;
     const drewGate = this.drawAsset("gateSegment", last.x - 80 * s, last.y + 102 * s, { width: 98 * s, anchorY: 1, rotation: -0.05, alpha: 0.95 });
     this.drawAsset("flowerPatch", last.x + 22 * s, last.y + 105 * s, { width: 68 * s, anchorY: 1, alpha: 0.95 });
     if (!drewGate) {
@@ -546,10 +553,10 @@ export class CanvasRenderer {
       return false;
     }
 
-    const s = layout.scale;
+    const s = layout.entityScale;
     this.drawShadow(center.x, center.y + 26 * s, 76 * s, 21 * s, 0.2);
-    this.drawDirectionCue(layout, center, sheep.facing);
     this.drawAsset(assetKey, center.x, center.y + 36 * s + bounce, { height: 92 * s, anchorY: 0.95 });
+    this.drawDirectionCue(layout, center, sheep.facing);
     return true;
   }
 
@@ -569,23 +576,39 @@ export class CanvasRenderer {
   }
 
   private drawDirectionCue(layout: IsoLayout, center: ScreenPoint, facing: Direction): void {
-    const s = layout.scale;
-    const offset = {
-      north: { x: 0, y: -16 * s },
-      east: { x: 25 * s, y: 7 * s },
-      south: { x: 0, y: 25 * s },
-      west: { x: -25 * s, y: 7 * s },
-    }[facing];
+    const ctx = this.ctx;
+    const s = layout.entityScale;
+    const badgeRadius = Math.max(9, Math.min(24, 17 * Math.max(s, layout.scale * 0.72)));
+    const offsetY = -42 * s;
+    ctx.save();
+    ctx.translate(center.x, center.y + offsetY);
+    this.drawDirectionGlyph(ctx, facing, badgeRadius, "#2469c8", "#fff8d2", "#5a351e");
+    ctx.restore();
+  }
 
-    if (!this.drawAsset("directionArrow", center.x + offset.x, center.y + offset.y, {
-      width: 30 * s,
+  private drawRescueGlow(layout: IsoLayout, center: ScreenPoint, now: number): void {
+    const ctx = this.ctx;
+    const s = layout.entityScale;
+    const pulse = 0.5 + Math.sin(now * 0.006) * 0.5;
+    const width = (58 + pulse * 18) * s;
+    if (this.drawAsset("successSparkle", center.x, center.y - 22 * s, {
+      width,
       anchorX: 0.5,
       anchorY: 0.5,
-      alpha: 0.88,
-      rotation: this.directionRotation(facing),
+      alpha: 0.84,
+      rotation: Math.sin(now * 0.002) * 0.12,
     })) {
       return;
     }
+
+    ctx.save();
+    ctx.globalAlpha = 0.58 + pulse * 0.22;
+    ctx.strokeStyle = "#ffe55a";
+    ctx.lineWidth = Math.max(2, 5 * s);
+    ctx.beginPath();
+    ctx.ellipse(center.x, center.y - 16 * s, 44 * s, 28 * s, -0.12, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
   }
 
   private sheepPalette(color: SheepDefinition["color"]): { wool: string; shade: string; face: string } {
@@ -606,21 +629,41 @@ export class CanvasRenderer {
 
   private drawDirectionBadge(ctx: CanvasRenderingContext2D, facing: Direction, s: number): void {
     ctx.save();
-    ctx.translate(0, -35 * s);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
+    ctx.translate(0, -38 * s);
+    this.drawDirectionGlyph(ctx, facing, 13 * s, "#2469c8", "#fff8d2", "#5a351e");
+    ctx.restore();
+  }
+
+  private drawDirectionGlyph(
+    ctx: CanvasRenderingContext2D,
+    facing: Direction,
+    radius: number,
+    arrowFill: string,
+    badgeFill: string,
+    badgeStroke: string,
+  ): void {
+    ctx.save();
+    ctx.shadowColor = "rgba(55, 38, 18, 0.22)";
+    ctx.shadowBlur = radius * 0.35;
+    ctx.shadowOffsetY = radius * 0.16;
+    ctx.fillStyle = badgeFill;
     ctx.beginPath();
-    ctx.arc(0, 0, 11 * s, 0, Math.PI * 2);
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = "rgba(145, 110, 55, 0.35)";
-    ctx.lineWidth = 1.8 * s;
+    ctx.shadowColor = "transparent";
+    ctx.lineWidth = Math.max(2, radius * 0.16);
+    ctx.strokeStyle = badgeStroke;
     ctx.stroke();
-    ctx.rotate({ north: -Math.PI / 2, east: 0, south: Math.PI / 2, west: Math.PI }[facing]);
-    ctx.fillStyle = "#7b5a2b";
+    ctx.rotate(this.directionRotation(facing));
+    ctx.fillStyle = arrowFill;
     ctx.beginPath();
-    ctx.moveTo(6 * s, 0);
-    ctx.lineTo(-4 * s, -5 * s);
-    ctx.lineTo(-2 * s, 0);
-    ctx.lineTo(-4 * s, 5 * s);
+    ctx.moveTo(radius * 0.62, 0);
+    ctx.lineTo(radius * 0.08, -radius * 0.44);
+    ctx.lineTo(radius * 0.08, -radius * 0.18);
+    ctx.lineTo(-radius * 0.52, -radius * 0.18);
+    ctx.lineTo(-radius * 0.52, radius * 0.18);
+    ctx.lineTo(radius * 0.08, radius * 0.18);
+    ctx.lineTo(radius * 0.08, radius * 0.44);
     ctx.closePath();
     ctx.fill();
     ctx.restore();

@@ -1,19 +1,122 @@
 {
   "id": "level_002",
   "titleKey": "level.002.title",
-  "objectiveKey": "objective.default",
+  "objectiveKey": "objective.beginner",
   "width": 5,
   "height": 5,
-  "pen": { "x": 2, "y": -1.25, "entryDirection": "south" },
+  "difficulty": 5,
+  "recommendedMoves": 14,
+  "generatedSeed": 4020029384,
+  "pen": {
+    "x": 2,
+    "y": -1.25,
+    "entryDirection": "south"
+  },
   "sheep": [
-    { "id": "s1", "x": 4, "y": 3, "facing": "west", "color": "yellow" },
-    { "id": "s2", "x": 2, "y": 3, "facing": "west", "color": "cream" },
-    { "id": "s3", "x": 0, "y": 1, "facing": "east", "color": "pink" },
-    { "id": "s4", "x": 2, "y": 4, "facing": "north", "color": "mint" },
-    { "id": "s5", "x": 3, "y": 0, "facing": "south", "color": "blue" }
+    {
+      "id": "s001",
+      "x": 2,
+      "y": 3,
+      "facing": "east",
+      "color": "blue"
+    },
+    {
+      "id": "s002",
+      "x": 3,
+      "y": 1,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s003",
+      "x": 1,
+      "y": 2,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s004",
+      "x": 2,
+      "y": 4,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s005",
+      "x": 4,
+      "y": 1,
+      "facing": "east",
+      "color": "pink"
+    },
+    {
+      "id": "s006",
+      "x": 3,
+      "y": 3,
+      "facing": "east",
+      "color": "mint"
+    },
+    {
+      "id": "s007",
+      "x": 0,
+      "y": 4,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s008",
+      "x": 2,
+      "y": 0,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s009",
+      "x": 0,
+      "y": 0,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s010",
+      "x": 0,
+      "y": 2,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s011",
+      "x": 1,
+      "y": 0,
+      "facing": "west",
+      "color": "yellow"
+    },
+    {
+      "id": "s012",
+      "x": 1,
+      "y": 4,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s013",
+      "x": 4,
+      "y": 3,
+      "facing": "east",
+      "color": "pink"
+    },
+    {
+      "id": "s014",
+      "x": 2,
+      "y": 2,
+      "facing": "west",
+      "color": "cream"
+    }
   ],
   "obstacles": [
-    { "x": 4, "y": 0, "kind": "tree" },
-    { "x": 1, "y": 4, "kind": "flower" }
+    {
+      "x": 3,
+      "y": 4,
+      "kind": "tree"
+    }
   ]
 }

@@ -1,18 +1,52 @@
 {
   "id": "level_001",
   "titleKey": "level.001.title",
-  "objectiveKey": "objective.default",
+  "objectiveKey": "objective.beginner",
   "width": 5,
   "height": 5,
-  "pen": { "x": 2, "y": -1.25, "entryDirection": "south" },
+  "difficulty": 5,
+  "recommendedMoves": 4,
+  "generatedSeed": 4245456706,
+  "pen": {
+    "x": 2,
+    "y": -1.25,
+    "entryDirection": "south"
+  },
   "sheep": [
-    { "id": "s1", "x": 1, "y": 2, "facing": "east", "color": "cream" },
-    { "id": "s2", "x": 3, "y": 2, "facing": "east", "color": "pink" },
-    { "id": "s3", "x": 2, "y": 4, "facing": "north", "color": "mint" },
-    { "id": "s4", "x": 4, "y": 1, "facing": "west", "color": "blue" }
+    {
+      "id": "s001",
+      "x": 4,
+      "y": 3,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s002",
+      "x": 0,
+      "y": 0,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s003",
+      "x": 0,
+      "y": 2,
+      "facing": "west",
+      "color": "blue"
+    },
+    {
+      "id": "s004",
+      "x": 0,
+      "y": 4,
+      "facing": "west",
+      "color": "cream"
+    }
   ],
   "obstacles": [
-    { "x": 0, "y": 4, "kind": "flower" },
-    { "x": 4, "y": 4, "kind": "fence" }
+    {
+      "x": 4,
+      "y": 4,
+      "kind": "hay"
+    }
   ]
 }
