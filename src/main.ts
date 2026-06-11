@@ -4,7 +4,7 @@ import { getLevel, levels } from "./game/levelLoader";
 import { buildEscapePath, evaluateTap } from "./game/rules";
 import type { FeedbackState, GamePhase, GameViewState, LevelDefinition, MoveState, SheepDefinition } from "./game/types";
 import { CanvasRenderer } from "./render/canvasRenderer";
-import { Localization } from "./ui/localization";
+import { Localization, localeOptions, type Locale } from "./ui/localization";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (!app) {
@@ -27,8 +27,7 @@ app.innerHTML = `
       </div>
       <div class="hud-actions">
         <button class="icon-button" type="button" data-action="restart" aria-label="Restart">↻</button>
-        <button class="icon-button" type="button" data-action="language" aria-label="Language"></button>
-        <button class="icon-button" type="button" data-action="sound" aria-label="Sound"></button>
+        <button class="icon-button" type="button" data-action="settings" aria-label="Settings"></button>
       </div>
     </section>
 
@@ -49,8 +48,7 @@ app.innerHTML = `
         <span class="scene-sheep scene-sheep-c"></span>
       </div>
       <div class="scene-controls">
-        <button class="scene-control control-language" type="button" data-action="language" aria-label="Language"></button>
-        <button class="scene-control control-sound" type="button" data-action="sound" aria-label="Sound"></button>
+        <button class="scene-control control-settings" type="button" data-action="settings" aria-label="Settings"></button>
       </div>
       <div class="panel menu-panel">
         <div class="home-brand">
@@ -97,8 +95,40 @@ app.innerHTML = `
           <button class="text-button" type="button" data-action="retry"></button>
           <button class="text-button reward-action" type="button" data-action="reward-rescue"></button>
           <button class="text-button" type="button" data-action="menu"></button>
-          <button class="text-button" type="button" data-action="language"></button>
-          <button class="text-button" type="button" data-action="sound"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="overlay settings-overlay" data-role="settings" hidden>
+      <div class="panel settings-panel">
+        <div class="settings-header">
+          <h2 data-role="settings-title"></h2>
+          <button class="icon-button small" type="button" data-action="settings-close" aria-label="Close"></button>
+        </div>
+
+        <div class="settings-view" data-role="settings-home">
+          <button class="settings-item" type="button" data-action="language-list">
+            <span class="settings-item-copy">
+              <strong data-role="settings-language-label"></strong>
+              <small data-role="settings-language-current"></small>
+            </span>
+            <span class="settings-chevron" aria-hidden="true">›</span>
+          </button>
+          <button class="settings-item" type="button" data-action="sound">
+            <span class="settings-item-copy">
+              <strong data-role="settings-sound-label"></strong>
+              <small data-role="settings-sound-current"></small>
+            </span>
+            <span class="settings-toggle" data-role="settings-sound-toggle" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <div class="settings-view" data-role="language-view" hidden>
+          <div class="settings-subheader">
+            <button class="icon-button small" type="button" data-action="settings-home" aria-label="Back"></button>
+            <strong data-role="settings-language-title"></strong>
+          </div>
+          <div class="language-options" data-role="language-options"></div>
         </div>
       </div>
     </section>
@@ -135,6 +165,17 @@ const els = {
   status: document.querySelector<HTMLElement>('[data-role="status"]')!,
   resultTitle: document.querySelector<HTMLElement>('[data-role="result-title"]')!,
   resultBody: document.querySelector<HTMLElement>('[data-role="result-body"]')!,
+  settings: document.querySelector<HTMLElement>('[data-role="settings"]')!,
+  settingsTitle: document.querySelector<HTMLElement>('[data-role="settings-title"]')!,
+  settingsHome: document.querySelector<HTMLElement>('[data-role="settings-home"]')!,
+  languageView: document.querySelector<HTMLElement>('[data-role="language-view"]')!,
+  settingsLanguageLabel: document.querySelector<HTMLElement>('[data-role="settings-language-label"]')!,
+  settingsLanguageCurrent: document.querySelector<HTMLElement>('[data-role="settings-language-current"]')!,
+  settingsLanguageTitle: document.querySelector<HTMLElement>('[data-role="settings-language-title"]')!,
+  settingsSoundLabel: document.querySelector<HTMLElement>('[data-role="settings-sound-label"]')!,
+  settingsSoundCurrent: document.querySelector<HTMLElement>('[data-role="settings-sound-current"]')!,
+  settingsSoundToggle: document.querySelector<HTMLElement>('[data-role="settings-sound-toggle"]')!,
+  languageOptions: document.querySelector<HTMLElement>('[data-role="language-options"]')!,
 };
 
 let selectedLevelIndex = Number(localStorage.getItem("sheepRun.selectedLevel") ?? 0);
@@ -253,8 +294,20 @@ document.addEventListener("click", async (event) => {
     case "menu":
       showMenu();
       break;
-    case "language":
-      i18n.cycle();
+    case "settings":
+      openSettings();
+      break;
+    case "settings-close":
+      closeSettings();
+      break;
+    case "settings-home":
+      showSettingsHome();
+      break;
+    case "language-list":
+      showLanguageList();
+      break;
+    case "select-language":
+      selectLanguage(target?.closest<HTMLElement>("[data-locale]")?.dataset.locale);
       refreshTexts();
       renderUiState();
       break;
@@ -288,6 +341,7 @@ function startLevel(index: number): void {
   enteredCount = 0;
   els.menu.hidden = true;
   els.result.hidden = true;
+  els.settings.hidden = true;
   els.topBar.hidden = false;
   els.bottomStatus.hidden = false;
   refreshLevelButtons();
@@ -301,6 +355,7 @@ function showMenu(): void {
   hintSheepIds = [];
   els.menu.hidden = false;
   els.result.hidden = true;
+  els.settings.hidden = true;
   els.topBar.hidden = true;
   els.bottomStatus.hidden = true;
   level = getLevel(selectedLevelIndex);
@@ -313,7 +368,11 @@ function showMenu(): void {
 function showResult(win: boolean, bodyKey: string): void {
   resultWasWin = win;
   statusKey = win ? "status.won" : "status.failed";
+  els.result.dataset.result = win ? "win" : "fail";
   els.result.hidden = false;
+  els.settings.hidden = true;
+  els.topBar.hidden = true;
+  els.bottomStatus.hidden = true;
   els.resultTitle.textContent = i18n.t(win ? "result.win.title" : "result.fail.title");
   els.resultTitle.style.color = win ? "#257d38" : "#b9362c";
   els.resultBody.textContent = i18n.t(bodyKey);
@@ -324,6 +383,7 @@ function showResult(win: boolean, bodyKey: string): void {
   const rewardButton = els.result.querySelector<HTMLElement>('[data-action="reward-rescue"]');
   if (rewardButton) {
     rewardButton.hidden = win;
+    rewardButton.textContent = i18n.t("button.watchAd");
   }
   renderUiState();
 }
@@ -382,6 +442,10 @@ function refreshTexts(): void {
   els.levelLabel.textContent = i18n.t("menu.levels");
   els.rewardLabel.textContent = i18n.t("menu.rewardRescue");
   els.rewardHint.textContent = i18n.t("menu.rewardHint");
+  els.settingsTitle.textContent = i18n.t("settings.title");
+  els.settingsLanguageLabel.textContent = i18n.t("settings.language");
+  els.settingsLanguageTitle.textContent = i18n.t("settings.languageTitle");
+  els.settingsSoundLabel.textContent = i18n.t("settings.sound");
 
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="start"]')) {
     button.textContent = i18n.t("menu.continue").replace("{level}", String(selectedLevelIndex + 1));
@@ -398,17 +462,24 @@ function refreshTexts(): void {
     button.textContent = i18n.t("button.next");
   }
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="reward-rescue"].reward-action')) {
-    button.textContent = i18n.t("button.rewardRescue");
+    button.textContent = i18n.t("button.watchAd");
   }
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="menu"]')) {
     button.textContent = i18n.t("button.menu");
   }
-  for (const button of document.querySelectorAll<HTMLElement>('[data-action="language"]')) {
-    button.textContent = shortLocaleLabel();
-    button.setAttribute("aria-label", `${i18n.t("button.language")} ${i18n.current}`);
+  for (const button of document.querySelectorAll<HTMLElement>('[data-action="settings"]')) {
+    button.setAttribute("aria-label", i18n.t("button.settings"));
+  }
+  for (const button of document.querySelectorAll<HTMLElement>('[data-action="settings-close"]')) {
+    button.setAttribute("aria-label", i18n.t("button.close"));
+  }
+  for (const button of document.querySelectorAll<HTMLElement>('[data-action="settings-home"]')) {
+    button.setAttribute("aria-label", i18n.t("button.back"));
+  }
+  for (const button of document.querySelectorAll<HTMLElement>('[data-action="language-list"]')) {
+    button.setAttribute("aria-label", i18n.t("settings.languageTitle"));
   }
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="sound"]')) {
-    button.textContent = audio.isMuted ? "SFX" : "♪";
     button.setAttribute("aria-label", i18n.t(audio.isMuted ? "button.sound" : "button.mute"));
   }
   for (const button of document.querySelectorAll<HTMLElement>('[data-action="page-prev"]')) {
@@ -419,11 +490,74 @@ function refreshTexts(): void {
   }
 
   refreshLevelButtons();
+  refreshSettingsState();
   renderProgress();
   renderUiState();
   if (!els.result.hidden) {
     els.resultTitle.textContent = i18n.t(resultWasWin ? "result.win.title" : "result.fail.title");
     els.resultBody.textContent = i18n.t(resultWasWin ? "result.win.body" : feedback?.reasonKey ?? "fail.missed");
+  }
+}
+
+function openSettings(): void {
+  els.settings.hidden = false;
+  showSettingsHome();
+}
+
+function closeSettings(): void {
+  els.settings.hidden = true;
+  showSettingsHome();
+}
+
+function showSettingsHome(): void {
+  els.settingsHome.hidden = false;
+  els.languageView.hidden = true;
+  refreshSettingsState();
+}
+
+function showLanguageList(): void {
+  els.settingsHome.hidden = true;
+  els.languageView.hidden = false;
+  refreshLanguageOptions();
+}
+
+function selectLanguage(locale: string | undefined): void {
+  if (!isLocale(locale)) {
+    return;
+  }
+
+  i18n.set(locale);
+  showSettingsHome();
+}
+
+function refreshSettingsState(): void {
+  const languageName = languageNameFor(i18n.current);
+  els.settingsLanguageCurrent.textContent = i18n.t("settings.languageCurrent").replace("{language}", languageName);
+  els.settingsSoundCurrent.textContent = i18n.t(audio.isMuted ? "settings.soundOff" : "settings.soundOn");
+  els.settingsSoundToggle.dataset.state = audio.isMuted ? "off" : "on";
+  refreshLanguageOptions();
+}
+
+function refreshLanguageOptions(): void {
+  els.languageOptions.innerHTML = "";
+  for (const option of localeOptions) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "language-option";
+    button.dataset.action = "select-language";
+    button.dataset.locale = option.locale;
+    button.setAttribute("aria-pressed", String(option.locale === i18n.current));
+
+    const name = document.createElement("span");
+    name.textContent = option.nativeName;
+    const code = document.createElement("small");
+    code.textContent = option.locale;
+    const check = document.createElement("span");
+    check.className = "language-check";
+    check.textContent = option.locale === i18n.current ? "✓" : "";
+
+    button.append(name, code, check);
+    els.languageOptions.appendChild(button);
   }
 }
 
@@ -528,24 +662,12 @@ function cloneSheep(sourceLevel: LevelDefinition): SheepDefinition[] {
   return sourceLevel.sheep.map((sheep) => ({ ...sheep }));
 }
 
-function shortLocaleLabel(): string {
-  switch (i18n.current) {
-    case "zh-CN":
-      return "中";
-    case "zh-TW":
-      return "繁";
-    case "ja":
-      return "日";
-    case "fr":
-      return "FR";
-    case "de":
-      return "DE";
-    case "ar":
-      return "ع";
-    case "en":
-    default:
-      return "EN";
-  }
+function languageNameFor(locale: Locale): string {
+  return localeOptions.find((option) => option.locale === locale)?.nativeName ?? locale;
+}
+
+function isLocale(locale: string | undefined): locale is Locale {
+  return localeOptions.some((option) => option.locale === locale);
 }
 
 function readDebugLevelIndex(): number | null {
