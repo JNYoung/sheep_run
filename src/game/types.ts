@@ -70,8 +70,9 @@ export interface GameViewState {
 }
 
 export interface FeedbackState {
-  kind: "fail";
+  kind: "fail" | "warn";
   coord: GridCoord | null;
   startedAt: number;
   reasonKey: string;
+  path?: GridCoord[];
 }

@@ -58,6 +58,23 @@ function buildLevel(levelNumber) {
 }
 
 function levelSpec(levelNumber) {
+  if (levelNumber <= 20) {
+    const earlySheepRamp = [4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+    const width = levelNumber <= 10 ? 5 : 6;
+    const height = width;
+    const obstacleCount = levelNumber <= 4 ? 0 : levelNumber <= 8 ? 1 : levelNumber <= 14 ? 2 : 3;
+
+    return {
+      levelNumber,
+      width,
+      height,
+      sheepCount: earlySheepRamp[levelNumber - 1],
+      obstacleCount,
+      dependencyWeight: 0.18 + levelNumber * 0.018,
+      difficulty: Math.round(2 + (levelNumber - 1) * 0.52),
+    };
+  }
+
   const t = (levelNumber - 1) / (levelCount - 1);
   const stage = Math.floor((levelNumber - 1) / 10);
   const withinStage = (levelNumber - 1) % 10;

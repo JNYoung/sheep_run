@@ -514,6 +514,10 @@ export class CanvasRenderer {
       return;
     }
 
+    if (view.feedback.path?.length) {
+      this.drawFeedbackPath(layout, view.feedback.path, view.feedback.kind, alpha, age);
+    }
+
     const center = view.feedback.coord ? gridToScreen(layout, view.feedback.coord) : { x: layout.width * 0.5, y: layout.height * 0.54 };
     const ctx = this.ctx;
     if (this.drawAsset("wrongTapRipple", center.x, center.y + 8 * layout.scale, {
@@ -532,6 +536,56 @@ export class CanvasRenderer {
     ctx.beginPath();
     ctx.arc(center.x, center.y - 18 * layout.scale, (28 + age * 0.045) * layout.scale, 0, Math.PI * 2);
     ctx.stroke();
+    ctx.restore();
+  }
+
+  private drawFeedbackPath(layout: IsoLayout, path: GridCoord[], kind: "fail" | "warn", alpha: number, age: number): void {
+    const ctx = this.ctx;
+    const color = kind === "warn" ? "#ffe45d" : "#ff574d";
+    const halo = kind === "warn" ? "rgba(255, 248, 177, 0.48)" : "rgba(255, 97, 82, 0.38)";
+    const points = path.map((coord) => gridToScreen(layout, coord));
+    if (points.length === 0) {
+      return;
+    }
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = halo;
+    ctx.lineWidth = Math.max(5, 13 * layout.scale);
+    ctx.setLineDash([12 * layout.scale, 8 * layout.scale]);
+    ctx.lineDashOffset = -age * 0.04;
+    ctx.beginPath();
+    points.forEach((point, index) => {
+      const y = point.y - 8 * layout.scale;
+      if (index === 0) {
+        ctx.moveTo(point.x, y);
+      } else {
+        ctx.lineTo(point.x, y);
+      }
+    });
+    ctx.stroke();
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(2, 5 * layout.scale);
+    ctx.beginPath();
+    points.forEach((point, index) => {
+      const y = point.y - 8 * layout.scale;
+      if (index === 0) {
+        ctx.moveTo(point.x, y);
+      } else {
+        ctx.lineTo(point.x, y);
+      }
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const last = points[points.length - 1];
+    ctx.fillStyle = kind === "warn" ? "rgba(255, 236, 92, 0.28)" : "rgba(255, 84, 72, 0.24)";
+    ctx.beginPath();
+    ctx.ellipse(last.x, last.y - 8 * layout.scale, 36 * layout.scale, 22 * layout.scale, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 

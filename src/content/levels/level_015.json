@@ -4,8 +4,8 @@
   "objectiveKey": "objective.intermediate",
   "width": 6,
   "height": 6,
-  "difficulty": 11,
-  "recommendedMoves": 22,
+  "difficulty": 9,
+  "recommendedMoves": 20,
   "generatedSeed": 3213199183,
   "pen": {
     "x": 2.5,
@@ -15,70 +15,70 @@
   "sheep": [
     {
       "id": "s001",
-      "x": 5,
-      "y": 4,
+      "x": 3,
+      "y": 5,
       "facing": "south",
-      "color": "cream"
+      "color": "pink"
     },
     {
       "id": "s002",
-      "x": 4,
-      "y": 1,
-      "facing": "north",
-      "color": "mint"
-    },
-    {
-      "id": "s003",
-      "x": 4,
-      "y": 2,
-      "facing": "north",
-      "color": "blue"
-    },
-    {
-      "id": "s004",
-      "x": 3,
-      "y": 2,
-      "facing": "south",
-      "color": "cream"
-    },
-    {
-      "id": "s005",
-      "x": 3,
+      "x": 5,
       "y": 5,
       "facing": "south",
       "color": "mint"
     },
     {
+      "id": "s003",
+      "x": 5,
+      "y": 4,
+      "facing": "south",
+      "color": "blue"
+    },
+    {
+      "id": "s004",
+      "x": 4,
+      "y": 1,
+      "facing": "north",
+      "color": "cream"
+    },
+    {
+      "id": "s005",
+      "x": 0,
+      "y": 2,
+      "facing": "north",
+      "color": "blue"
+    },
+    {
       "id": "s006",
-      "x": 3,
-      "y": 3,
+      "x": 4,
+      "y": 2,
+      "facing": "north",
+      "color": "pink"
+    },
+    {
+      "id": "s007",
+      "x": 1,
+      "y": 5,
       "facing": "south",
       "color": "yellow"
     },
     {
-      "id": "s007",
-      "x": 0,
-      "y": 3,
-      "facing": "north",
-      "color": "yellow"
-    },
-    {
       "id": "s008",
-      "x": 0,
-      "y": 2,
-      "facing": "north",
+      "x": 3,
+      "y": 3,
+      "facing": "south",
       "color": "blue"
     },
     {
       "id": "s009",
       "x": 1,
-      "y": 5,
+      "y": 4,
       "facing": "south",
       "color": "cream"
     },
     {
       "id": "s010",
-      "x": 5,
+      "x": 1,
       "y": 2,
       "facing": "south",
       "color": "mint"
@@ -86,62 +86,62 @@
     {
       "id": "s011",
       "x": 1,
-      "y": 4,
+      "y": 3,
       "facing": "south",
       "color": "pink"
     },
     {
       "id": "s012",
-      "x": 5,
-      "y": 5,
-      "facing": "south",
-      "color": "yellow"
-    },
-    {
-      "id": "s013",
-      "x": 1,
-      "y": 3,
-      "facing": "south",
-      "color": "mint"
-    },
-    {
-      "id": "s014",
       "x": 0,
       "y": 1,
       "facing": "north",
       "color": "mint"
     },
     {
-      "id": "s015",
+      "id": "s013",
       "x": 5,
       "y": 3,
       "facing": "south",
-      "color": "pink"
+      "color": "yellow"
     },
     {
-      "id": "s016",
+      "id": "s014",
       "x": 2,
       "y": 2,
       "facing": "north",
-      "color": "pink"
+      "color": "cream"
     },
     {
-      "id": "s017",
+      "id": "s015",
       "x": 0,
       "y": 0,
       "facing": "north",
       "color": "pink"
     },
     {
-      "id": "s018",
+      "id": "s016",
       "x": 3,
       "y": 4,
       "facing": "south",
-      "color": "blue"
+      "color": "mint"
+    },
+    {
+      "id": "s017",
+      "x": 5,
+      "y": 2,
+      "facing": "south",
+      "color": "cream"
+    },
+    {
+      "id": "s018",
+      "x": 2,
+      "y": 1,
+      "facing": "north",
+      "color": "yellow"
     },
     {
       "id": "s019",
-      "x": 2,
+      "x": 4,
       "y": 0,
       "facing": "north",
       "color": "yellow"
@@ -149,40 +149,26 @@
     {
       "id": "s020",
       "x": 2,
-      "y": 1,
-      "facing": "north",
-      "color": "cream"
-    },
-    {
-      "id": "s021",
-      "x": 4,
       "y": 0,
       "facing": "north",
-      "color": "pink"
-    },
-    {
-      "id": "s022",
-      "x": 1,
-      "y": 2,
-      "facing": "south",
       "color": "blue"
     }
   ],
   "obstacles": [
     {
       "x": 0,
-      "y": 5,
-      "kind": "flower"
-    },
-    {
-      "x": 4,
       "y": 4,
-      "kind": "fence"
+      "kind": "tree"
     },
     {
-      "x": 2,
-      "y": 5,
-      "kind": "flower"
+      "x": 3,
+      "y": 2,
+      "kind": "tree"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "kind": "tree"
     }
   ]
 }

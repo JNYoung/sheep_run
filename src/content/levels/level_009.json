@@ -4,8 +4,8 @@
   "objectiveKey": "objective.intermediate",
   "width": 5,
   "height": 5,
-  "difficulty": 9,
-  "recommendedMoves": 14,
+  "difficulty": 6,
+  "recommendedMoves": 13,
   "generatedSeed": 1527076652,
   "pen": {
     "x": 2,
@@ -22,90 +22,83 @@
     },
     {
       "id": "s002",
-      "x": 2,
-      "y": 4,
-      "facing": "west",
-      "color": "blue"
-    },
-    {
-      "id": "s003",
-      "x": 3,
-      "y": 3,
-      "facing": "east",
-      "color": "yellow"
-    },
-    {
-      "id": "s004",
-      "x": 0,
-      "y": 2,
-      "facing": "west",
-      "color": "cream"
-    },
-    {
-      "id": "s005",
-      "x": 0,
-      "y": 0,
-      "facing": "west",
-      "color": "cream"
-    },
-    {
-      "id": "s006",
-      "x": 2,
-      "y": 1,
-      "facing": "east",
-      "color": "yellow"
-    },
-    {
-      "id": "s007",
-      "x": 1,
-      "y": 4,
-      "facing": "west",
-      "color": "mint"
-    },
-    {
-      "id": "s008",
       "x": 4,
       "y": 3,
       "facing": "east",
       "color": "blue"
     },
     {
-      "id": "s009",
-      "x": 1,
-      "y": 0,
-      "facing": "west",
-      "color": "pink"
+      "id": "s003",
+      "x": 2,
+      "y": 1,
+      "facing": "east",
+      "color": "yellow"
     },
     {
-      "id": "s010",
-      "x": 2,
-      "y": 2,
+      "id": "s004",
+      "x": 0,
+      "y": 0,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s005",
+      "x": 1,
+      "y": 4,
       "facing": "west",
       "color": "mint"
     },
     {
-      "id": "s011",
+      "id": "s006",
       "x": 0,
       "y": 4,
       "facing": "west",
       "color": "pink"
     },
     {
-      "id": "s012",
+      "id": "s007",
+      "x": 2,
+      "y": 2,
+      "facing": "west",
+      "color": "mint"
+    },
+    {
+      "id": "s008",
+      "x": 1,
+      "y": 0,
+      "facing": "west",
+      "color": "pink"
+    },
+    {
+      "id": "s009",
       "x": 1,
       "y": 2,
       "facing": "west",
       "color": "pink"
     },
     {
-      "id": "s013",
+      "id": "s010",
       "x": 2,
       "y": 3,
       "facing": "east",
       "color": "cream"
     },
     {
-      "id": "s014",
+      "id": "s011",
+      "x": 0,
+      "y": 2,
+      "facing": "west",
+      "color": "cream"
+    },
+    {
+      "id": "s012",
+      "x": 3,
+      "y": 3,
+      "facing": "east",
+      "color": "yellow"
+    },
+    {
+      "id": "s013",
       "x": 3,
       "y": 1,
       "facing": "east",
@@ -121,11 +114,6 @@
     {
       "x": 4,
       "y": 0,
-      "kind": "flower"
-    },
-    {
-      "x": 3,
-      "y": 2,
       "kind": "flower"
     }
   ]
